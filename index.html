@@ -518,6 +518,7 @@
         .status-Ongoing { background-color: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
         .status-Informed { background-color: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
         .status-ReadyHaiBasDenaHai { background-color: #ccfbf1; color: #0f766e; border-color: #99f6e4; }
+        .status-InquiryKrkeBatanaHaiBas { background-color: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
         .status-Complete { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
         .status-NotInterested { background-color: #fee2e2; color: #b91c1c; border-color: #fecaca; }
         .status-NotCame { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
@@ -709,6 +710,7 @@
                     <option value="On Going">On Going</option>
                     <option value="Informed">Informed</option>
                     <option value="Ready hai bas dena hai">Ready hai bas dena hai</option>
+                    <option value="Inquiry krke batana hai bas">Inquiry krke batana hai bas</option>
                     <option value="Complete">Complete</option>
                     <option value="Customer Not Interested">Customer Not Interested</option>
                     <option value="Customer Not Came">Customer Not Came</option>
@@ -750,6 +752,7 @@
             <option value="On Going">On Going</option>
             <option value="Informed">Informed</option>
             <option value="Ready hai bas dena hai">Ready hai bas dena hai</option>
+            <option value="Inquiry krke batana hai bas">Inquiry krke batana hai bas</option>
             <option value="Complete">Complete</option>
             <option value="Customer Not Interested">Customer Not Interested</option>
             <option value="Customer Not Came">Customer Not Came</option>
@@ -825,6 +828,7 @@
                 <option value="On Going">On Going</option>
                 <option value="Informed">Informed</option>
                 <option value="Ready hai bas dena hai">Ready hai bas dena hai</option>
+                <option value="Inquiry krke batana hai bas">Inquiry krke batana hai bas</option>
                 <option value="Complete">Complete</option>
                 <option value="Customer Not Interested">Customer Not Interested</option>
                 <option value="Customer Not Came">Customer Not Came</option>
@@ -993,7 +997,13 @@
     }
 
     function getAgingBadgeHtml(entry) {
-        const isPending = (entry.status === 'Incomplete' || entry.status === 'On Going' || entry.status === 'Informed' || entry.status === 'Ready hai bas dena hai');
+        const isPending = (
+            entry.status === 'Incomplete' || 
+            entry.status === 'On Going' || 
+            entry.status === 'Informed' || 
+            entry.status === 'Ready hai bas dena hai' ||
+            entry.status === 'Inquiry krke batana hai bas'
+        );
         if (!isPending) return '';
 
         let createdAtMs = Date.now();
@@ -1028,7 +1038,13 @@
 
             if (data.status === 'Complete') {
                 completeCount++;
-            } else if (data.status === 'Incomplete' || data.status === 'On Going' || data.status === 'Informed' || data.status === 'Ready hai bas dena hai') {
+            } else if (
+                data.status === 'Incomplete' || 
+                data.status === 'On Going' || 
+                data.status === 'Informed' || 
+                data.status === 'Ready hai bas dena hai' ||
+                data.status === 'Inquiry krke batana hai bas'
+            ) {
                 activeCount++;
             }
         });
@@ -1203,6 +1219,7 @@
             "On Going",
             "Informed",
             "Ready hai bas dena hai",
+            "Inquiry krke batana hai bas",
             "Complete",
             "Customer Not Interested",
             "Customer Not Came",
@@ -1460,6 +1477,7 @@
         if (status === 'On Going') return 'status-Ongoing';
         if (status === 'Informed') return 'status-Informed';
         if (status === 'Ready hai bas dena hai') return 'status-ReadyHaiBasDenaHai';
+        if (status === 'Inquiry krke batana hai bas') return 'status-InquiryKrkeBatanaHaiBas';
         if (status === 'Complete') return 'status-Complete';
         if (status === 'Customer Not Interested') return 'status-NotInterested';
         if (status === 'Customer Not Came') return 'status-NotCame';
