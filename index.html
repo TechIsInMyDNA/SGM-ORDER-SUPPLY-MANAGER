@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGM CUSTOMERS ORDER SUPPLY REMINDER SYSTEM</title>
+    <title>SGM - Shree Ganesh Medicals</title>
     
-    <!-- PWA & SGM Exact Logo Setup -->
+    <!-- PWA & Title Bar Icon Meta Tags -->
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SGM Orders">
 
-    <!-- Browser Favicon & Apple Touch Icons -->
-    <link rel="icon" type="image/png" sizes="192x192" href="logo.png">
-    <link rel="icon" type="image/jpeg" sizes="192x192" href="logo.jpg">
+    <!-- Direct High-Res Base64 Favicons for Window Titlebar -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Ccircle cx='250' cy='250' r='235' fill='%23d9e84b' stroke='%231b5e20' stroke-width='16' stroke-dasharray='15,4'/%3E%3Cpath d='M230 115 C230 100, 250 85, 250 85 C250 85, 270 100, 270 115 C270 125, 230 125, 230 115 Z' fill='none' stroke='%231b5e20' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M220 135 C220 125, 280 125, 280 135 C280 145, 220 145, 220 135 Z' fill='none' stroke='%231b5e20' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M210 155 C210 145, 290 145, 290 155' fill='none' stroke='%231b5e20' stroke-width='9' stroke-linecap='round'/%3E%3Cpath d='M242 170 L250 182 L258 170' fill='none' stroke='%231b5e20' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='250' cy='165' r='4' fill='%231b5e20'/%3E%3Cpath d='M220 170 C160 170, 140 220, 160 260 C170 280, 195 285, 205 250' fill='none' stroke='%231b5e20' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M280 170 C340 170, 360 220, 340 260 C330 280, 305 285, 295 250' fill='none' stroke='%231b5e20' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M205 250 C185 350, 250 370, 250 290 L268 335 L282 250 L300 355 L318 280 L335 315 L400 315' fill='none' stroke='%231b5e20' stroke-width='13' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ctext x='250' y='65' text-anchor='middle' font-size='16' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EShree Ganeshay Namah%3C/text%3E%3Ctext x='135' y='320' font-size='22' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EShree%3C/text%3E%3Ctext x='125' y='345' font-size='22' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EGanesh%3C/text%3E%3Ctext x='365' y='380' text-anchor='middle' font-size='26' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EMedicals%3C/text%3E%3C/svg%3E">
+    <link rel="shortcut icon" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
 
-    <!-- Web App Manifest for Desktop & Mobile Install Icon -->
+    <!-- Web App Manifest -->
     <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{
         "name": "Shree Ganesh Medicals - Order Supply Reminder",
         "short_name": "SGM Orders",
@@ -26,21 +26,9 @@
         "theme_color": "#2563eb",
         "icons": [
             {
-                "src": "logo.png",
-                "sizes": "192x192",
-                "type": "image/png",
-                "purpose": "any maskable"
-            },
-            {
-                "src": "logo.png",
+                "src": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\"%3E%3Ccircle cx=\"250\" cy=\"250\" r=\"235\" fill=\"%23d9e84b\" stroke=\"%231b5e20\" stroke-width=\"16\" stroke-dasharray=\"15,4\"/%3E%3Cpath d=\"M230 115 C230 100, 250 85, 250 85 C250 85, 270 100, 270 115 C270 125, 230 125, 230 115 Z\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"8\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M220 135 C220 125, 280 125, 280 135 C280 145, 220 145, 220 135 Z\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"8\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M210 155 C210 145, 290 145, 290 155\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"9\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M242 170 L250 182 L258 170\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"7\" stroke-linecap=\"round\"/%3E%3Ccircle cx=\"250\" cy=\"165\" r=\"4\" fill=\"%231b5e20\"/%3E%3Cpath d=\"M220 170 C160 170, 140 220, 160 260 C170 280, 195 285, 205 250\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"12\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M280 170 C340 170, 360 220, 340 260 C330 280, 305 285, 295 250\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"12\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M205 250 C185 350, 250 370, 250 290 L268 335 L282 250 L300 355 L318 280 L335 315 L400 315\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/%3E%3Ctext x=\"250\" y=\"65\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EShree Ganeshay Namah%3C/text%3E%3Ctext x=\"135\" y=\"320\" font-size=\"22\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EShree%3C/text%3E%3Ctext x=\"125\" y=\"345\" font-size=\"22\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EGanesh%3C/text%3E%3Ctext x=\"365\" y=\"380\" text-anchor=\"middle\" font-size=\"26\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EMedicals%3C/text%3E%3C/svg%3E",
                 "sizes": "512x512",
-                "type": "image/png",
-                "purpose": "any maskable"
-            },
-            {
-                "src": "logo.jpg",
-                "sizes": "512x512",
-                "type": "image/jpeg",
+                "type": "image/svg+xml",
                 "purpose": "any maskable"
             }
         ]
@@ -111,8 +99,8 @@
         }
 
         .brand-logo-img {
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #22c55e;
@@ -141,7 +129,6 @@
             flex-wrap: wrap;
         }
 
-        /* Install App Button */
         .btn-install {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
@@ -647,7 +634,7 @@
 <body>
 
 <div class="container">
-    <!-- Top Header Bar with Your Exact SGM Logo -->
+    <!-- Top Header Bar with SGM Logo -->
     <div class="top-navbar">
         <div class="brand-box">
             <img src="logo.png" alt="SGM Logo" class="brand-logo-img" onerror="this.src='logo.jpg'; this.onerror=null;">
@@ -658,7 +645,6 @@
         </div>
 
         <div class="top-actions">
-            <!-- PWA Install Button -->
             <button class="btn-install" id="installAppBtn" onclick="installPWA()">
                 <i class="fa-solid fa-download"></i> Install App
             </button>
@@ -771,7 +757,7 @@
         </select>
     </div>
 
-    <!-- 1. DESKTOP VIEW: Table -->
+    <!-- Desktop Table View -->
     <div class="desktop-table-container">
         <table>
             <thead>
@@ -791,18 +777,17 @@
         </table>
     </div>
 
-    <!-- 2. MOBILE VIEW: Fast Easy Cards -->
+    <!-- Mobile View: Cards -->
     <div class="mobile-cards-container" id="mobileCardsContainer">
         <div style="text-align:center; padding: 25px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</div>
     </div>
 </div>
 
-<!-- Floating Action Button for Mobile -->
 <button class="floating-add-btn" onclick="scrollToForm()" title="Add New Order">
     <i class="fa-solid fa-plus"></i>
 </button>
 
-<!-- ================= EDIT MODAL ================= -->
+<!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -850,7 +835,7 @@
     </div>
 </div>
 
-<!-- ================= BEFORE EDIT HISTORY MODAL ================= -->
+<!-- BEFORE EDIT HISTORY MODAL -->
 <div class="modal-overlay" id="historyModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -862,7 +847,6 @@
 </div>
 
 <script>
-    // ================= PWA INSTALLATION LOGIC =================
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -883,11 +867,10 @@
             }
             deferredPrompt = null;
         } else {
-            alert("Chrome menu (⋮) me jakar 'Install SGM Orders' select karein!");
+            alert("Chrome menu (⋮) me jakar 'Install App' select karein!");
         }
     }
 
-    // Inline Service Worker Registration
     if ('serviceWorker' in navigator) {
         const swBlob = new Blob([`
             self.addEventListener('install', e => self.skipWaiting());
@@ -898,10 +881,8 @@
         navigator.serviceWorker.register(swUrl).catch(() => {});
     }
 
-    // Admin PIN
     const ADMIN_PIN = "1234";
 
-    // Firebase Config (Configured)
     const firebaseConfig = {
         apiKey: "AIzaSyAA7HYW0-3-whwQTrX_QWJPfHaKZLEkbeoPw",
         authDomain: "sgm-order-supply-manager.firebaseapp.com",
@@ -1029,7 +1010,6 @@
         return '';
     }
 
-    // Real-time listener
     ordersCol.orderBy("createdAt", "desc").onSnapshot((snapshot) => {
         allOrdersData = [];
         let totalDeposit = 0;
