@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGM CUSTOMERS ORDER SUPPLY REMINDER SYSTEM</title>
     
-    <!-- PWA & SGM Logo Meta Tags -->
+    <!-- PWA & SGM Exact Logo Setup -->
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SGM Orders">
 
-    <!-- Direct SVG Favicon (Always Works Without Extra Files) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Ccircle cx='250' cy='250' r='235' fill='%23d9e84b' stroke='%231b5e20' stroke-width='16'/%3E%3Cpath d='M150 180 C130 130, 200 80, 250 80 C300 80, 370 130, 350 180 C340 200, 320 220, 300 220 C280 220, 280 200, 250 200 C220 200, 220 220, 200 220 C180 220, 160 200, 150 180 Z' fill='none' stroke='%231b5e20' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M250 200 L250 260 C250 330, 210 330, 210 280 C210 240, 250 240, 250 300 L270 330 L285 240 L305 350 L325 270 L345 310 L400 310' fill='none' stroke='%231b5e20' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <!-- Browser Favicon & Apple Touch Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="logo.png">
+    <link rel="icon" type="image/jpeg" sizes="192x192" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.png">
 
-    <!-- Manifest -->
+    <!-- Web App Manifest for Desktop & Mobile Install Icon -->
     <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{
         "name": "Shree Ganesh Medicals - Order Supply Reminder",
         "short_name": "SGM Orders",
@@ -24,9 +26,21 @@
         "theme_color": "#2563eb",
         "icons": [
             {
-                "src": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\"%3E%3Ccircle cx=\"250\" cy=\"250\" r=\"235\" fill=\"%23d9e84b\" stroke=\"%231b5e20\" stroke-width=\"16\"/%3E%3Cpath d=\"M150 180 C130 130, 200 80, 250 80 C300 80, 370 130, 350 180 C340 200, 320 220, 300 220 C280 220, 280 200, 250 200 C220 200, 220 220, 200 220 C180 220, 160 200, 150 180 Z\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"12\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M250 200 L250 260 C250 330, 210 330, 210 280 C210 240, 250 240, 250 300 L270 330 L285 240 L305 350 L325 270 L345 310 L400 310\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"14\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/%3E%3C/svg%3E",
+                "src": "logo.png",
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "any maskable"
+            },
+            {
+                "src": "logo.png",
                 "sizes": "512x512",
-                "type": "image/svg+xml",
+                "type": "image/png",
+                "purpose": "any maskable"
+            },
+            {
+                "src": "logo.jpg",
+                "sizes": "512x512",
+                "type": "image/jpeg",
                 "purpose": "any maskable"
             }
         ]
@@ -96,16 +110,14 @@
             gap: 12px;
         }
 
-        /* Direct SVG Logo styling */
-        .svg-sgm-logo {
+        .brand-logo-img {
             width: 46px;
             height: 46px;
             border-radius: 50%;
-            flex-shrink: 0;
+            object-fit: cover;
+            border: 2px solid #22c55e;
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-            transition: transform 0.2s ease;
         }
-        .svg-sgm-logo:hover { transform: scale(1.05); }
 
         .brand-text h1 {
             font-size: 17px;
@@ -621,7 +633,7 @@
             .container { padding: 12px; border-radius: 12px; }
             .brand-text h1 { font-size: 14.5px; }
             .brand-text p { font-size: 9.5px; }
-            .svg-sgm-logo { width: 38px; height: 38px; }
+            .brand-logo-img { width: 38px; height: 38px; }
             .form-grid-top { grid-template-columns: 1fr; gap: 8px; }
             .item-row { flex-direction: column; align-items: stretch; background: #f1f5f9; padding: 8px; border-radius: 8px; }
             .item-row input[name="itemName"], .item-row input[name="itemQty"] { width: 100%; }
@@ -635,37 +647,10 @@
 <body>
 
 <div class="container">
-    <!-- Top Header Bar with Embedded High-Res SGM Logo -->
+    <!-- Top Header Bar with Your Exact SGM Logo -->
     <div class="top-navbar">
         <div class="brand-box">
-            <!-- Exact Shree Ganesh Medicals SVG Vector Logo -->
-            <svg class="svg-sgm-logo" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-                <!-- Circular Background -->
-                <circle cx="250" cy="250" r="235" fill="#d9e84b" stroke="#1b5e20" stroke-width="16" stroke-dasharray="15,4"/>
-                
-                <!-- Ganesha Crown & Forehead -->
-                <path d="M230 115 C230 100, 250 85, 250 85 C250 85, 270 100, 270 115 C270 125, 230 125, 230 115 Z" fill="none" stroke="#1b5e20" stroke-width="8" stroke-linecap="round"/>
-                <path d="M220 135 C220 125, 280 125, 280 135 C280 145, 220 145, 220 135 Z" fill="none" stroke="#1b5e20" stroke-width="8" stroke-linecap="round"/>
-                <path d="M210 155 C210 145, 290 145, 290 155" fill="none" stroke="#1b5e20" stroke-width="9" stroke-linecap="round"/>
-                
-                <!-- Tilak -->
-                <path d="M242 170 L250 182 L258 170" fill="none" stroke="#1b5e20" stroke-width="7" stroke-linecap="round"/>
-                <circle cx="250" cy="165" r="4" fill="#1b5e20"/>
-
-                <!-- Ears & Head Contour -->
-                <path d="M220 170 C160 170, 140 220, 160 260 C170 280, 195 285, 205 250" fill="none" stroke="#1b5e20" stroke-width="12" stroke-linecap="round"/>
-                <path d="M280 170 C340 170, 360 220, 340 260 C330 280, 305 285, 295 250" fill="none" stroke="#1b5e20" stroke-width="12" stroke-linecap="round"/>
-
-                <!-- Trunk Forming ECG Medical Wave (Pulse) -->
-                <path d="M205 250 C185 350, 250 370, 250 290 L268 335 L282 250 L300 355 L318 280 L335 315 L400 315" fill="none" stroke="#1b5e20" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
-                
-                <!-- Text Overlays -->
-                <text x="250" y="65" text-anchor="middle" font-size="16" font-weight="900" fill="#1b5e20" font-family="sans-serif">Shree Ganeshay Namah</text>
-                <text x="135" y="320" font-size="22" font-weight="900" fill="#1b5e20" font-family="sans-serif">Shree</text>
-                <text x="125" y="345" font-size="22" font-weight="900" fill="#1b5e20" font-family="sans-serif">Ganesh</text>
-                <text x="365" y="380" text-anchor="middle" font-size="26" font-weight="900" fill="#1b5e20" font-family="sans-serif">Medicals</text>
-            </svg>
-            
+            <img src="logo.png" alt="SGM Logo" class="brand-logo-img" onerror="this.src='logo.jpg'; this.onerror=null;">
             <div class="brand-text">
                 <h1>Shree Ganesh Medicals</h1>
                 <p>Order Supply Reminder System</p>
@@ -898,7 +883,7 @@
             }
             deferredPrompt = null;
         } else {
-            alert("Chrome menu (⋮) me jakar 'Install App' select karein!");
+            alert("Chrome menu (⋮) me jakar 'Install SGM Orders' select karein!");
         }
     }
 
@@ -934,7 +919,6 @@
 
     let allOrdersData = [];
 
-    // Helper: PIN Verification
     function verifyAdminPIN() {
         const entered = prompt("🔒 Kripya Admin PIN daalein:");
         if (entered === null) return false;
@@ -946,7 +930,6 @@
         }
     }
 
-    // Dynamic Multi-Item Row Handlers
     function addNewItemRow(containerId, nameVal = "", qtyVal = "") {
         const container = document.getElementById(containerId);
         const row = document.createElement("div");
@@ -1006,7 +989,6 @@
         return items.map(i => i.qty ? `${i.name} (${i.qty})` : i.name).join(', ');
     }
 
-    // 1. SMART ORDER ID GENERATOR
     function generateOrderId() {
         const now = new Date();
         const year = now.getFullYear();
@@ -1027,7 +1009,6 @@
         return `SGM-${entry.id.slice(0,6).toUpperCase()}`;
     }
 
-    // 2. AGING / OVERDUE ALERT
     function getAgingBadgeHtml(entry) {
         const isPending = (entry.status === 'Incomplete' || entry.status === 'On Going');
         if (!isPending) return '';
@@ -1048,7 +1029,7 @@
         return '';
     }
 
-    // 3. REAL-TIME LISTENER
+    // Real-time listener
     ordersCol.orderBy("createdAt", "desc").onSnapshot((snapshot) => {
         allOrdersData = [];
         let totalDeposit = 0;
@@ -1070,7 +1051,6 @@
             }
         });
 
-        // Update KPI Pills Bar
         document.getElementById("kpiTotal").innerText = allOrdersData.length;
         document.getElementById("kpiActive").innerText = activeCount;
         document.getElementById("kpiComplete").innerText = completeCount;
@@ -1082,7 +1062,6 @@
         document.getElementById("reminderTableBody").innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444; padding: 25px;"><i class="fa-solid fa-triangle-exclamation"></i> Error loading data! Check rules.</td></tr>`;
     });
 
-    // 4. SEARCH & FILTER
     function filterAndRender() {
         const query = document.getElementById("searchInput").value.toLowerCase().trim();
         const statusFilter = document.getElementById("statusFilter").value;
@@ -1105,7 +1084,6 @@
         renderMobileCards(filtered);
     }
 
-    // Render Table (Desktop)
     function renderDesktopTable(records) {
         const tbody = document.getElementById("reminderTableBody");
         tbody.innerHTML = "";
@@ -1164,7 +1142,6 @@
         });
     }
 
-    // Render Cards (Mobile)
     function renderMobileCards(records) {
         const cardsContainer = document.getElementById("mobileCardsContainer");
         cardsContainer.innerHTML = "";
@@ -1250,7 +1227,6 @@
         return statuses.map(st => `<option value="${st}" ${currentStatus === st ? 'selected' : ''}>${st}</option>`).join('');
     }
 
-    // 5. ADD NEW ORDER
     async function addEntry() {
         const name = document.getElementById("custName").value.trim();
         const phone = document.getElementById("custPhone").value.trim();
@@ -1309,7 +1285,6 @@
         }
     }
 
-    // 6. REPEAT ORDER
     function repeatOrder(docId) {
         const order = allOrdersData.find(o => o.id === docId);
         if (!order) return;
@@ -1328,7 +1303,6 @@
         alert(`✅ Order details auto-filled for '${order.name}'. Naya deposit/qty check karke Add karein.`);
     }
 
-    // 7. EDIT MODAL WITH PIN
     function openEditModalWithPIN(docId) {
         if (!verifyAdminPIN()) return;
 
@@ -1424,7 +1398,6 @@
         }
     }
 
-    // 8. SHOW HISTORY
     function showHistory(docId) {
         const order = allOrdersData.find(o => o.id === docId);
         if (!order || !order.editHistory || order.editHistory.length === 0) {
@@ -1459,7 +1432,6 @@
         document.getElementById("historyModal").classList.remove("active");
     }
 
-    // 9. STATUS UPDATE
     async function updateStatus(id, newStatus) {
         try {
             await ordersCol.doc(id).update({ status: newStatus });
@@ -1468,7 +1440,6 @@
         }
     }
 
-    // 10. SCROLL & EXPORT
     function scrollToForm() {
         document.getElementById("formSection").scrollIntoView({ behavior: 'smooth' });
         document.getElementById("custName").focus();
