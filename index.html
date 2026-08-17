@@ -5,15 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGM CUSTOMERS ORDER SUPPLY REMINDER SYSTEM</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA & SGM Logo Meta Tags -->
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SGM Orders">
 
-    <!-- Inline Web App Manifest -->
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22SGM%20Customers%20Order%20Supply%20Reminder%22%2C%22short_name%22%3A%22SGM%20Orders%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F3050%2F3050239.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3050/3050239.png">
+    <!-- Direct SVG Favicon (Always Works Without Extra Files) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Ccircle cx='250' cy='250' r='235' fill='%23d9e84b' stroke='%231b5e20' stroke-width='16'/%3E%3Cpath d='M150 180 C130 130, 200 80, 250 80 C300 80, 370 130, 350 180 C340 200, 320 220, 300 220 C280 220, 280 200, 250 200 C220 200, 220 220, 200 220 C180 220, 160 200, 150 180 Z' fill='none' stroke='%231b5e20' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M250 200 L250 260 C250 330, 210 330, 210 280 C210 240, 250 240, 250 300 L270 330 L285 240 L305 350 L325 270 L345 310 L400 310' fill='none' stroke='%231b5e20' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+    <!-- Manifest -->
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{
+        "name": "Shree Ganesh Medicals - Order Supply Reminder",
+        "short_name": "SGM Orders",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#2563eb",
+        "icons": [
+            {
+                "src": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\"%3E%3Ccircle cx=\"250\" cy=\"250\" r=\"235\" fill=\"%23d9e84b\" stroke=\"%231b5e20\" stroke-width=\"16\"/%3E%3Cpath d=\"M150 180 C130 130, 200 80, 250 80 C300 80, 370 130, 350 180 C340 200, 320 220, 300 220 C280 220, 280 200, 250 200 C220 200, 220 220, 200 220 C180 220, 160 200, 150 180 Z\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"12\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M250 200 L250 260 C250 330, 210 330, 210 280 C210 240, 250 240, 250 300 L270 330 L285 240 L305 350 L325 270 L345 310 L400 310\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"14\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/%3E%3C/svg%3E",
+                "sizes": "512x512",
+                "type": "image/svg+xml",
+                "purpose": "any maskable"
+            }
+        ]
+    }'>
 
     <!-- Google Fonts & Font Awesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -61,7 +78,7 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
-        /* Top Bar */
+        /* Top Bar & Brand Logo */
         .top-navbar {
             display: flex;
             justify-content: space-between;
@@ -73,16 +90,37 @@
             border-bottom: 1.5px solid #e2e8f0;
         }
 
-        .brand-title { 
-            font-size: 19px; 
-            font-weight: 800; 
-            color: #0f172a;
+        .brand-box { 
             display: flex;
             align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
+            gap: 12px;
         }
-        .brand-title i { color: var(--primary); }
+
+        /* Direct SVG Logo styling */
+        .svg-sgm-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            transition: transform 0.2s ease;
+        }
+        .svg-sgm-logo:hover { transform: scale(1.05); }
+
+        .brand-text h1 {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .brand-text p {
+            font-size: 11px;
+            font-weight: 700;
+            color: #15803d;
+            margin-top: 2px;
+        }
 
         .top-actions {
             display: flex;
@@ -101,7 +139,7 @@
             font-size: 12.5px;
             font-weight: 700;
             cursor: pointer;
-            display: none; /* Shown dynamically by JS if supported */
+            display: none;
             align-items: center;
             gap: 6px;
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
@@ -355,7 +393,7 @@
         td { border-bottom: 1px solid var(--border-color); padding: 12px 14px; font-size: 13px; vertical-align: middle; }
         tr:hover { background-color: #f8fafc; }
 
-        /* Items Display List inside Table & Cards */
+        /* Items Display List */
         .items-display-list {
             list-style: none;
             display: flex;
@@ -373,11 +411,7 @@
             gap: 6px;
         }
 
-        .item-pill-name {
-            font-weight: 700;
-            color: #0f172a;
-        }
-
+        .item-pill-name { font-weight: 700; color: #0f172a; }
         .item-pill-qty {
             background: #f1f5f9;
             color: #475569;
@@ -585,7 +619,9 @@
         @media (max-width: 820px) {
             body { padding: 8px 6px 80px 6px; }
             .container { padding: 12px; border-radius: 12px; }
-            .brand-title { font-size: 16px; }
+            .brand-text h1 { font-size: 14.5px; }
+            .brand-text p { font-size: 9.5px; }
+            .svg-sgm-logo { width: 38px; height: 38px; }
             .form-grid-top { grid-template-columns: 1fr; gap: 8px; }
             .item-row { flex-direction: column; align-items: stretch; background: #f1f5f9; padding: 8px; border-radius: 8px; }
             .item-row input[name="itemName"], .item-row input[name="itemQty"] { width: 100%; }
@@ -599,11 +635,43 @@
 <body>
 
 <div class="container">
-    <!-- Top Header Bar -->
+    <!-- Top Header Bar with Embedded High-Res SGM Logo -->
     <div class="top-navbar">
-        <div class="brand-title">
-            <i class="fa-solid fa-boxes-packing"></i> SGM Supply Reminder
+        <div class="brand-box">
+            <!-- Exact Shree Ganesh Medicals SVG Vector Logo -->
+            <svg class="svg-sgm-logo" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                <!-- Circular Background -->
+                <circle cx="250" cy="250" r="235" fill="#d9e84b" stroke="#1b5e20" stroke-width="16" stroke-dasharray="15,4"/>
+                
+                <!-- Ganesha Crown & Forehead -->
+                <path d="M230 115 C230 100, 250 85, 250 85 C250 85, 270 100, 270 115 C270 125, 230 125, 230 115 Z" fill="none" stroke="#1b5e20" stroke-width="8" stroke-linecap="round"/>
+                <path d="M220 135 C220 125, 280 125, 280 135 C280 145, 220 145, 220 135 Z" fill="none" stroke="#1b5e20" stroke-width="8" stroke-linecap="round"/>
+                <path d="M210 155 C210 145, 290 145, 290 155" fill="none" stroke="#1b5e20" stroke-width="9" stroke-linecap="round"/>
+                
+                <!-- Tilak -->
+                <path d="M242 170 L250 182 L258 170" fill="none" stroke="#1b5e20" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="250" cy="165" r="4" fill="#1b5e20"/>
+
+                <!-- Ears & Head Contour -->
+                <path d="M220 170 C160 170, 140 220, 160 260 C170 280, 195 285, 205 250" fill="none" stroke="#1b5e20" stroke-width="12" stroke-linecap="round"/>
+                <path d="M280 170 C340 170, 360 220, 340 260 C330 280, 305 285, 295 250" fill="none" stroke="#1b5e20" stroke-width="12" stroke-linecap="round"/>
+
+                <!-- Trunk Forming ECG Medical Wave (Pulse) -->
+                <path d="M205 250 C185 350, 250 370, 250 290 L268 335 L282 250 L300 355 L318 280 L335 315 L400 315" fill="none" stroke="#1b5e20" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <!-- Text Overlays -->
+                <text x="250" y="65" text-anchor="middle" font-size="16" font-weight="900" fill="#1b5e20" font-family="sans-serif">Shree Ganeshay Namah</text>
+                <text x="135" y="320" font-size="22" font-weight="900" fill="#1b5e20" font-family="sans-serif">Shree</text>
+                <text x="125" y="345" font-size="22" font-weight="900" fill="#1b5e20" font-family="sans-serif">Ganesh</text>
+                <text x="365" y="380" text-anchor="middle" font-size="26" font-weight="900" fill="#1b5e20" font-family="sans-serif">Medicals</text>
+            </svg>
+            
+            <div class="brand-text">
+                <h1>Shree Ganesh Medicals</h1>
+                <p>Order Supply Reminder System</p>
+            </div>
         </div>
+
         <div class="top-actions">
             <!-- PWA Install Button -->
             <button class="btn-install" id="installAppBtn" onclick="installPWA()">
@@ -647,7 +715,7 @@
         </div>
     </div>
     
-    <!-- Quick Entry Form (With Multi-Item Capability) -->
+    <!-- Quick Entry Form -->
     <div class="form-card" id="formSection">
         <div class="form-card-title">
             <i class="fa-solid fa-plus-circle" style="color:var(--primary);"></i> Add New Customer Order
@@ -682,7 +750,7 @@
         <!-- Multi-Item Rows Container -->
         <div class="multi-items-box">
             <div class="multi-item-header">
-                <span><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Items / Requirements List</span>
+                <span><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Items / Medicines List</span>
                 <button type="button" class="btn-add-item-row" onclick="addNewItemRow('itemsContainer')">
                     <i class="fa-solid fa-plus"></i> Add More Item
                 </button>
@@ -766,7 +834,6 @@
             <input type="tel" id="editCustPhone">
         </div>
 
-        <!-- Multi-Item Edit Container -->
         <div class="multi-items-box" style="margin-bottom:10px;">
             <div class="multi-item-header">
                 <span>Items List</span>
@@ -831,11 +898,11 @@
             }
             deferredPrompt = null;
         } else {
-            alert("Chrome menu (⋮) me jakar 'Install SGM Orders' ya 'Add to Home Screen' select karein!");
+            alert("Chrome menu (⋮) me jakar 'Install App' select karein!");
         }
     }
 
-    // Inline Service Worker Registration for PWA Standalone Support
+    // Inline Service Worker Registration
     if ('serviceWorker' in navigator) {
         const swBlob = new Blob([`
             self.addEventListener('install', e => self.skipWaiting());
@@ -915,7 +982,6 @@
         return items;
     }
 
-    // Normalize Items (Backward Compatible)
     function normalizeItems(entry) {
         if (Array.isArray(entry.items) && entry.items.length > 0) {
             return entry.items;
@@ -926,7 +992,6 @@
         return [{ name: 'Unknown Item', qty: '' }];
     }
 
-    // Format Items HTML
     function formatItemsHtml(items) {
         let html = '<ul class="items-display-list">';
         items.forEach((it, idx) => {
@@ -1057,7 +1122,7 @@
             const items = normalizeItems(entry);
             const itemsHtml = formatItemsHtml(items);
             const itemsPlainText = getItemsPlainText(items);
-            const waMsg = encodeURIComponent(`Namaste ${entry.name || ''} ji! SGM se aapka order [${itemsPlainText}] ka status: ${entry.status}. Order ID: ${displayId}.`);
+            const waMsg = encodeURIComponent(`Namaste ${entry.name || ''} ji! Shree Ganesh Medicals se aapka order [${itemsPlainText}] ka status: ${entry.status}. Order ID: ${displayId}.`);
             const agingHtml = getAgingBadgeHtml(entry);
 
             let editedHtml = '';
@@ -1116,7 +1181,7 @@
             const items = normalizeItems(entry);
             const itemsHtml = formatItemsHtml(items);
             const itemsPlainText = getItemsPlainText(items);
-            const waMsg = encodeURIComponent(`Namaste ${entry.name || ''} ji! SGM se aapka order [${itemsPlainText}] ka status: ${entry.status}. Order ID: ${displayId}.`);
+            const waMsg = encodeURIComponent(`Namaste ${entry.name || ''} ji! Shree Ganesh Medicals se aapka order [${itemsPlainText}] ka status: ${entry.status}. Order ID: ${displayId}.`);
             const agingHtml = getAgingBadgeHtml(entry);
 
             let editedHtml = '';
