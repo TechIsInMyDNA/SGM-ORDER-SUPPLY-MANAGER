@@ -503,6 +503,7 @@
 
         .card-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; display: block; }
 
+        /* Status Dropdown Colors */
         .status-select { 
             padding: 7px 10px; 
             border-radius: 6px; 
@@ -515,6 +516,7 @@
         }
         .status-Incomplete { background-color: #fef3c7; color: #b45309; border-color: #fde68a; }
         .status-Ongoing { background-color: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+        .status-Informed { background-color: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
         .status-Complete { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
         .status-NotInterested { background-color: #fee2e2; color: #b91c1c; border-color: #fecaca; }
         .status-NotCame { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
@@ -704,6 +706,7 @@
                 <select id="custStatus">
                     <option value="Incomplete">Incomplete</option>
                     <option value="On Going">On Going</option>
+                    <option value="Informed">Informed</option>
                     <option value="Complete">Complete</option>
                     <option value="Customer Not Interested">Customer Not Interested</option>
                     <option value="Customer Not Came">Customer Not Came</option>
@@ -743,6 +746,7 @@
             <option value="ALL">All Statuses</option>
             <option value="Incomplete">Incomplete</option>
             <option value="On Going">On Going</option>
+            <option value="Informed">Informed</option>
             <option value="Complete">Complete</option>
             <option value="Customer Not Interested">Customer Not Interested</option>
             <option value="Customer Not Came">Customer Not Came</option>
@@ -816,6 +820,7 @@
             <select id="editCustStatus">
                 <option value="Incomplete">Incomplete</option>
                 <option value="On Going">On Going</option>
+                <option value="Informed">Informed</option>
                 <option value="Complete">Complete</option>
                 <option value="Customer Not Interested">Customer Not Interested</option>
                 <option value="Customer Not Came">Customer Not Came</option>
@@ -984,7 +989,7 @@
     }
 
     function getAgingBadgeHtml(entry) {
-        const isPending = (entry.status === 'Incomplete' || entry.status === 'On Going');
+        const isPending = (entry.status === 'Incomplete' || entry.status === 'On Going' || entry.status === 'Informed');
         if (!isPending) return '';
 
         let createdAtMs = Date.now();
@@ -1019,7 +1024,7 @@
 
             if (data.status === 'Complete') {
                 completeCount++;
-            } else if (data.status === 'Incomplete' || data.status === 'On Going') {
+            } else if (data.status === 'Incomplete' || data.status === 'On Going' || data.status === 'Informed') {
                 activeCount++;
             }
         });
@@ -1192,6 +1197,7 @@
         const statuses = [
             "Incomplete",
             "On Going",
+            "Informed",
             "Complete",
             "Customer Not Interested",
             "Customer Not Came",
@@ -1447,6 +1453,7 @@
     function getStatusClass(status) {
         if (status === 'Incomplete') return 'status-Incomplete';
         if (status === 'On Going') return 'status-Ongoing';
+        if (status === 'Informed') return 'status-Informed';
         if (status === 'Complete') return 'status-Complete';
         if (status === 'Customer Not Interested') return 'status-NotInterested';
         if (status === 'Customer Not Came') return 'status-NotCame';
