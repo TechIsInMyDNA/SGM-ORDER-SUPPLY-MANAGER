@@ -5,34 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGM - Shree Ganesh Medicals</title>
     
-    <!-- PWA & Title Bar Icon Meta Tags -->
+    <!-- PWA & Title Bar Icons -->
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SGM Orders">
 
-    <!-- Direct High-Res Base64 Favicons for Window Titlebar -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Ccircle cx='250' cy='250' r='235' fill='%23d9e84b' stroke='%231b5e20' stroke-width='16' stroke-dasharray='15,4'/%3E%3Cpath d='M230 115 C230 100, 250 85, 250 85 C250 85, 270 100, 270 115 C270 125, 230 125, 230 115 Z' fill='none' stroke='%231b5e20' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M220 135 C220 125, 280 125, 280 135 C280 145, 220 145, 220 135 Z' fill='none' stroke='%231b5e20' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M210 155 C210 145, 290 145, 290 155' fill='none' stroke='%231b5e20' stroke-width='9' stroke-linecap='round'/%3E%3Cpath d='M242 170 L250 182 L258 170' fill='none' stroke='%231b5e20' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='250' cy='165' r='4' fill='%231b5e20'/%3E%3Cpath d='M220 170 C160 170, 140 220, 160 260 C170 280, 195 285, 205 250' fill='none' stroke='%231b5e20' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M280 170 C340 170, 360 220, 340 260 C330 280, 305 285, 295 250' fill='none' stroke='%231b5e20' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M205 250 C185 350, 250 370, 250 290 L268 335 L282 250 L300 355 L318 280 L335 315 L400 315' fill='none' stroke='%231b5e20' stroke-width='13' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ctext x='250' y='65' text-anchor='middle' font-size='16' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EShree Ganeshay Namah%3C/text%3E%3Ctext x='135' y='320' font-size='22' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EShree%3C/text%3E%3Ctext x='125' y='345' font-size='22' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EGanesh%3C/text%3E%3Ctext x='365' y='380' text-anchor='middle' font-size='26' font-weight='900' fill='%231b5e20' font-family='sans-serif'%3EMedicals%3C/text%3E%3C/svg%3E">
-    <link rel="shortcut icon" href="logo.png">
+    <!-- Direct Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
+    <link rel="shortcut icon" href="logo.png">
 
-    <!-- Web App Manifest -->
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{
-        "name": "Shree Ganesh Medicals - Order Supply Reminder",
-        "short_name": "SGM Orders",
-        "start_url": ".",
-        "display": "standalone",
-        "background_color": "#ffffff",
-        "theme_color": "#2563eb",
-        "icons": [
-            {
-                "src": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\"%3E%3Ccircle cx=\"250\" cy=\"250\" r=\"235\" fill=\"%23d9e84b\" stroke=\"%231b5e20\" stroke-width=\"16\" stroke-dasharray=\"15,4\"/%3E%3Cpath d=\"M230 115 C230 100, 250 85, 250 85 C250 85, 270 100, 270 115 C270 125, 230 125, 230 115 Z\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"8\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M220 135 C220 125, 280 125, 280 135 C280 145, 220 145, 220 135 Z\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"8\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M210 155 C210 145, 290 145, 290 155\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"9\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M242 170 L250 182 L258 170\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"7\" stroke-linecap=\"round\"/%3E%3Ccircle cx=\"250\" cy=\"165\" r=\"4\" fill=\"%231b5e20\"/%3E%3Cpath d=\"M220 170 C160 170, 140 220, 160 260 C170 280, 195 285, 205 250\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"12\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M280 170 C340 170, 360 220, 340 260 C330 280, 305 285, 295 250\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"12\" stroke-linecap=\"round\"/%3E%3Cpath d=\"M205 250 C185 350, 250 370, 250 290 L268 335 L282 250 L300 355 L318 280 L335 315 L400 315\" fill=\"none\" stroke=\"%231b5e20\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/%3E%3Ctext x=\"250\" y=\"65\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EShree Ganeshay Namah%3C/text%3E%3Ctext x=\"135\" y=\"320\" font-size=\"22\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EShree%3C/text%3E%3Ctext x=\"125\" y=\"345\" font-size=\"22\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EGanesh%3C/text%3E%3Ctext x=\"365\" y=\"380\" text-anchor=\"middle\" font-size=\"26\" font-weight=\"900\" fill=\"%231b5e20\" font-family=\"sans-serif\"%3EMedicals%3C/text%3E%3C/svg%3E",
-                "sizes": "512x512",
-                "type": "image/svg+xml",
-                "purpose": "any maskable"
-            }
-        ]
-    }'>
+    <!-- External Manifest Link for Window Titlebar -->
+    <link rel="manifest" href="manifest.json">
 
     <!-- Google Fonts & Font Awesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -80,7 +66,6 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
-        /* Top Bar & Brand Logo */
         .top-navbar {
             display: flex;
             justify-content: space-between;
@@ -162,7 +147,6 @@
         }
         .btn-export:hover { background: #1e293b; }
 
-        /* Sleek KPI Pills Bar */
         .sleek-stats-bar {
             display: flex;
             gap: 10px;
@@ -202,7 +186,6 @@
         .pill-data .pill-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
         .pill-data .pill-value { font-size: 15px; font-weight: 800; color: #0f172a; }
 
-        /* Form Card */
         .form-card {
             background: #f8fafc;
             padding: 18px;
@@ -246,7 +229,6 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
-        /* Multi-Item Container Styling */
         .multi-items-box {
             background: #ffffff;
             border: 1.5px dashed #cbd5e1;
@@ -331,7 +313,6 @@
         button.add-btn:hover { background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); }
         button.add-btn:disabled { background: #94a3b8; cursor: not-allowed; }
 
-        /* Search & Filter Toolbar */
         .toolbar {
             display: flex;
             justify-content: space-between;
@@ -369,7 +350,6 @@
             cursor: pointer;
         }
 
-        /* Desktop Table View */
         .desktop-table-container { 
             overflow-x: auto; 
             border-radius: 10px;
@@ -392,7 +372,6 @@
         td { border-bottom: 1px solid var(--border-color); padding: 12px 14px; font-size: 13px; vertical-align: middle; }
         tr:hover { background-color: #f8fafc; }
 
-        /* Items Display List */
         .items-display-list {
             list-style: none;
             display: flex;
@@ -421,7 +400,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* Order ID & Badges */
         .order-id-badge {
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
             font-weight: 800;
@@ -474,7 +452,6 @@
             50% { opacity: 0.7; }
         }
 
-        /* Mobile Cards */
         .mobile-cards-container { display: none; flex-direction: column; gap: 12px; }
         .order-card {
             background: #ffffff;
@@ -504,7 +481,6 @@
 
         .card-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; display: block; }
 
-        /* Status Dropdowns */
         .status-select { 
             padding: 7px 10px; 
             border-radius: 6px; 
@@ -522,7 +498,6 @@
         .status-NotCame { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
         .status-CannotFulfilled { background-color: #ede9fe; color: #6b21a8; border-color: #ddd6fe; }
 
-        /* Action Buttons */
         .btn-action {
             padding: 6px 10px;
             border-radius: 6px;
@@ -546,7 +521,6 @@
 
         .deposit-amount { font-weight: 700; color: #059669; background: #ecfdf5; padding: 3px 8px; border-radius: 6px; display: inline-block; font-size: 13px; }
 
-        /* Mobile FAB Button */
         .floating-add-btn {
             position: fixed;
             bottom: 20px;
@@ -568,7 +542,6 @@
         }
         .floating-add-btn:hover { transform: scale(1.08); }
 
-        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -634,10 +607,9 @@
 <body>
 
 <div class="container">
-    <!-- Top Header Bar with SGM Logo -->
     <div class="top-navbar">
         <div class="brand-box">
-            <img src="logo.png" alt="SGM Logo" class="brand-logo-img" onerror="this.src='logo.jpg'; this.onerror=null;">
+            <img src="logo.png" alt="SGM Logo" class="brand-logo-img">
             <div class="brand-text">
                 <h1>Shree Ganesh Medicals</h1>
                 <p>Order Supply Reminder System</p>
@@ -654,7 +626,7 @@
         </div>
     </div>
 
-    <!-- Sleek KPI Pills Bar -->
+    <!-- Stats Bar -->
     <div class="sleek-stats-bar">
         <div class="stat-pill">
             <div class="pill-icon blue"><i class="fa-solid fa-list-check"></i></div>
@@ -718,7 +690,6 @@
             </div>
         </div>
 
-        <!-- Multi-Item Rows Container -->
         <div class="multi-items-box">
             <div class="multi-item-header">
                 <span><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Items / Medicines List</span>
@@ -757,7 +728,7 @@
         </select>
     </div>
 
-    <!-- Desktop Table View -->
+    <!-- Table View -->
     <div class="desktop-table-container">
         <table>
             <thead>
@@ -777,7 +748,7 @@
         </table>
     </div>
 
-    <!-- Mobile View: Cards -->
+    <!-- Mobile View -->
     <div class="mobile-cards-container" id="mobileCardsContainer">
         <div style="text-align:center; padding: 25px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</div>
     </div>
@@ -787,7 +758,7 @@
     <i class="fa-solid fa-plus"></i>
 </button>
 
-<!-- EDIT MODAL -->
+<!-- Edit Modal -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -835,7 +806,7 @@
     </div>
 </div>
 
-<!-- BEFORE EDIT HISTORY MODAL -->
+<!-- History Modal -->
 <div class="modal-overlay" id="historyModal">
     <div class="modal-box">
         <div class="modal-header">
