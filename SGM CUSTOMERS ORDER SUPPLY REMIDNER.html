@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGM CUSTOMERS ORDER SUPPLY REMINDER SYSTEM</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SGM Orders">
+
+    <!-- Inline Web App Manifest -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22SGM%20Customers%20Order%20Supply%20Reminder%22%2C%22short_name%22%3A%22SGM%20Orders%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F3050%2F3050239.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3050/3050239.png">
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDKs (v9 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body { 
+            background: #f1f5f9; 
+            padding: 16px 10px 80px 10px; 
+            color: var(--text-main); 
+            min-height: 100vh;
+        }
+
+        .container { 
+            max-width: 1360px; 
+            margin: 0 auto; 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: var(--shadow-lg); 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* Top Bar */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px solid #e2e8f0;
+        }
+
+        .brand-title { 
+            font-size: 19px; 
+            font-weight: 800; 
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+        .brand-title i { color: var(--primary); }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Install App Button */
+        .btn-install {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: none; /* Shown dynamically by JS if supported */
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            transition: 0.2s;
+        }
+        .btn-install:hover { background: #047857; }
+
+        .btn-export {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .btn-export:hover { background: #1e293b; }
+
+        /* Sleek KPI Pills Bar */
+        .sleek-stats-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 18px;
+            scrollbar-width: none;
+        }
+        .sleek-stats-bar::-webkit-scrollbar { display: none; }
+
+        .stat-pill {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 140px;
+        }
+        .stat-pill .pill-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .pill-icon.blue { background: #eff6ff; color: #2563eb; }
+        .pill-icon.amber { background: #fffbeb; color: #d97706; }
+        .pill-icon.green { background: #ecfdf5; color: #059669; }
+        .pill-icon.purple { background: #f5f3ff; color: #7c3aed; }
+
+        .pill-data .pill-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .pill-data .pill-value { font-size: 15px; font-weight: 800; color: #0f172a; }
+
+        /* Form Card */
+        .form-card {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-grid-top {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-weight: 600; font-size: 12px; color: #334155; display: flex; align-items: center; gap: 5px; }
+        .form-group input, .form-group select { 
+            padding: 10px 12px; 
+            border: 1.5px solid #cbd5e1; 
+            border-radius: 8px; 
+            font-size: 13.5px; 
+            color: var(--text-main);
+            outline: none; 
+            background: #ffffff;
+            transition: 0.2s ease;
+        }
+        .form-group input:focus, .form-group select:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        /* Multi-Item Container Styling */
+        .multi-items-box {
+            background: #ffffff;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .multi-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .multi-item-header span {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .btn-add-item-row {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .btn-add-item-row:hover { background: #2563eb; color: white; }
+
+        .item-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .item-row input[name="itemName"] { flex: 2; }
+        .item-row input[name="itemQty"] { flex: 1.2; }
+        
+        .btn-remove-row {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        .btn-remove-row:hover { background: #dc2626; color: white; }
+
+        button.add-btn { 
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            font-weight: 700; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%;
+            font-size: 14.5px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s ease; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        button.add-btn:hover { background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); }
+        button.add-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* Search & Filter Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+        }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 36px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+        .search-box input:focus { border-color: var(--primary); }
+
+        .filter-select {
+            padding: 9px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            outline: none;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Desktop Table View */
+        .desktop-table-container { 
+            overflow-x: auto; 
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: block;
+        }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0; background: #ffffff; }
+        th { 
+            background: #1e293b; 
+            color: #f8fafc; 
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 14px;
+            text-align: left;
+            white-space: nowrap; 
+        }
+        td { border-bottom: 1px solid var(--border-color); padding: 12px 14px; font-size: 13px; vertical-align: middle; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* Items Display List inside Table & Cards */
+        .items-display-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .items-display-list li {
+            font-size: 12.5px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .item-pill-name {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .item-pill-qty {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Order ID & Badges */
+        .order-id-badge {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-weight: 800;
+            color: #1e293b;
+            background: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            border: 1px solid #cbd5e1;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+
+        .edited-badge {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-top: 3px;
+        }
+        .edited-badge:hover { background: #fde68a; }
+
+        .aging-badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-top: 3px;
+        }
+        .aging-warning { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .aging-danger { 
+            background: #fee2e2; 
+            color: #b91c1c; 
+            border: 1px solid #fecaca; 
+            animation: pulse-danger 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-danger {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Mobile Cards */
+        .mobile-cards-container { display: none; flex-direction: column; gap: 12px; }
+        .order-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1.5px solid var(--border-color);
+            padding: 14px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .card-items-box {
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; display: block; }
+
+        /* Status Dropdowns */
+        .status-select { 
+            padding: 7px 10px; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-size: 12px;
+            border: 1.5px solid transparent; 
+            width: 100%; 
+            outline: none;
+            cursor: pointer;
+        }
+        .status-Incomplete { background-color: #fef3c7; color: #b45309; border-color: #fde68a; }
+        .status-Ongoing { background-color: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+        .status-Complete { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+        .status-NotInterested { background-color: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+        .status-NotCame { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+        .status-CannotFulfilled { background-color: #ede9fe; color: #6b21a8; border-color: #ddd6fe; }
+
+        /* Action Buttons */
+        .btn-action {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .btn-edit { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .btn-edit:hover { background: #2563eb; color: white; }
+        .btn-copy { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .btn-copy:hover { background: #16a34a; color: white; }
+        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-delete:hover { background: #dc2626; color: white; }
+        .btn-wa { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; text-decoration: none; }
+        .btn-wa:hover { background: #22c55e; color: white; }
+
+        .deposit-amount { font-weight: 700; color: #059669; background: #ecfdf5; padding: 3px 8px; border-radius: 6px; display: inline-block; font-size: 13px; }
+
+        /* Mobile FAB Button */
+        .floating-add-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            cursor: pointer;
+            z-index: 999;
+            transition: transform 0.2s;
+        }
+        .floating-add-btn:hover { transform: scale(1.08); }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .modal-header h3 { font-size: 16px; font-weight: 700; color: #0f172a; }
+        .close-modal { background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b; }
+
+        .history-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            font-size: 12.5px;
+        }
+        .history-time { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 5px; }
+        .history-data-line { margin: 3px 0; color: #334155; }
+        .history-data-line strong { color: #0f172a; }
+
+        @media (max-width: 820px) {
+            body { padding: 8px 6px 80px 6px; }
+            .container { padding: 12px; border-radius: 12px; }
+            .brand-title { font-size: 16px; }
+            .form-grid-top { grid-template-columns: 1fr; gap: 8px; }
+            .item-row { flex-direction: column; align-items: stretch; background: #f1f5f9; padding: 8px; border-radius: 8px; }
+            .item-row input[name="itemName"], .item-row input[name="itemQty"] { width: 100%; }
+            .btn-remove-row { width: 100%; height: 32px; margin-top: 4px; }
+            .desktop-table-container { display: none; }
+            .mobile-cards-container { display: flex; }
+            .floating-add-btn { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Top Header Bar -->
+    <div class="top-navbar">
+        <div class="brand-title">
+            <i class="fa-solid fa-boxes-packing"></i> SGM Supply Reminder
+        </div>
+        <div class="top-actions">
+            <!-- PWA Install Button -->
+            <button class="btn-install" id="installAppBtn" onclick="installPWA()">
+                <i class="fa-solid fa-download"></i> Install App
+            </button>
+            <button class="btn-export" onclick="exportToCSV()">
+                <i class="fa-solid fa-file-excel"></i> Export (CSV)
+            </button>
+        </div>
+    </div>
+
+    <!-- Sleek KPI Pills Bar -->
+    <div class="sleek-stats-bar">
+        <div class="stat-pill">
+            <div class="pill-icon blue"><i class="fa-solid fa-list-check"></i></div>
+            <div class="pill-data">
+                <div class="pill-title">Total</div>
+                <div class="pill-value" id="kpiTotal">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="pill-icon amber"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="pill-data">
+                <div class="pill-title">Active</div>
+                <div class="pill-value" id="kpiActive">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="pill-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="pill-data">
+                <div class="pill-title">Completed</div>
+                <div class="pill-value" id="kpiComplete">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="pill-icon purple"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="pill-data">
+                <div class="pill-title">Deposit</div>
+                <div class="pill-value" id="kpiDeposit">₹0</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Entry Form (With Multi-Item Capability) -->
+    <div class="form-card" id="formSection">
+        <div class="form-card-title">
+            <i class="fa-solid fa-plus-circle" style="color:var(--primary);"></i> Add New Customer Order
+        </div>
+
+        <div class="form-grid-top">
+            <div class="form-group">
+                <label><i class="fa-solid fa-user"></i> Customer Name</label>
+                <input type="text" id="custName" placeholder="Customer Name">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+                <input type="tel" id="custPhone" placeholder="Mobile No.">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-indian-rupee-sign"></i> Deposit (₹)</label>
+                <input type="number" id="custDeposit" placeholder="Advance Jama">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-clock-rotate-left"></i> Status</label>
+                <select id="custStatus">
+                    <option value="Incomplete">Incomplete</option>
+                    <option value="On Going">On Going</option>
+                    <option value="Complete">Complete</option>
+                    <option value="Customer Not Interested">Customer Not Interested</option>
+                    <option value="Customer Not Came">Customer Not Came</option>
+                    <option value="Ordered cannot be fulfilled by SGM">Ordered cannot be fulfilled by SGM</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Multi-Item Rows Container -->
+        <div class="multi-items-box">
+            <div class="multi-item-header">
+                <span><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Items / Requirements List</span>
+                <button type="button" class="btn-add-item-row" onclick="addNewItemRow('itemsContainer')">
+                    <i class="fa-solid fa-plus"></i> Add More Item
+                </button>
+            </div>
+            <div id="itemsContainer">
+                <div class="item-row">
+                    <input type="text" name="itemName" placeholder="Item Name (e.g. Paracetamol 650)" required>
+                    <input type="text" name="itemQty" placeholder="Quantity / Remarks (e.g. 2 Strips)">
+                    <button type="button" class="btn-remove-row" onclick="removeItemRow(this)"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <button class="add-btn" id="submitBtn" onclick="addEntry()">
+            <i class="fa-solid fa-check"></i> Add Order Reminder
+        </button>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="toolbar">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search by Name, Phone, Item, or ID..." oninput="filterAndRender()">
+        </div>
+        <select class="filter-select" id="statusFilter" onchange="filterAndRender()">
+            <option value="ALL">All Statuses</option>
+            <option value="Incomplete">Incomplete</option>
+            <option value="On Going">On Going</option>
+            <option value="Complete">Complete</option>
+            <option value="Customer Not Interested">Customer Not Interested</option>
+            <option value="Customer Not Came">Customer Not Came</option>
+            <option value="Ordered cannot be fulfilled by SGM">Ordered cannot be fulfilled by SGM</option>
+        </select>
+    </div>
+
+    <!-- 1. DESKTOP VIEW: Table -->
+    <div class="desktop-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID & Date</th>
+                    <th>Customer Name</th>
+                    <th>Phone / WhatsApp</th>
+                    <th>Items Required & Qty</th>
+                    <th>Deposit</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="reminderTableBody">
+                <tr><td colspan="7" style="text-align:center; padding: 25px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 2. MOBILE VIEW: Fast Easy Cards -->
+    <div class="mobile-cards-container" id="mobileCardsContainer">
+        <div style="text-align:center; padding: 25px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</div>
+    </div>
+</div>
+
+<!-- Floating Action Button for Mobile -->
+<button class="floating-add-btn" onclick="scrollToForm()" title="Add New Order">
+    <i class="fa-solid fa-plus"></i>
+</button>
+
+<!-- ================= EDIT MODAL ================= -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-pen-to-square" style="color:var(--primary);"></i> Edit Order Details</h3>
+            <button class="close-modal" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <input type="hidden" id="editDocId">
+        <div class="form-group" style="margin-bottom:10px;">
+            <label>Customer Name</label>
+            <input type="text" id="editCustName">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+            <label>Phone Number</label>
+            <input type="tel" id="editCustPhone">
+        </div>
+
+        <!-- Multi-Item Edit Container -->
+        <div class="multi-items-box" style="margin-bottom:10px;">
+            <div class="multi-item-header">
+                <span>Items List</span>
+                <button type="button" class="btn-add-item-row" onclick="addNewItemRow('editItemsContainer')">
+                    <i class="fa-solid fa-plus"></i> Add Item
+                </button>
+            </div>
+            <div id="editItemsContainer"></div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+            <label>Deposit Amount (₹)</label>
+            <input type="number" id="editCustDeposit">
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+            <label>Status</label>
+            <select id="editCustStatus">
+                <option value="Incomplete">Incomplete</option>
+                <option value="On Going">On Going</option>
+                <option value="Complete">Complete</option>
+                <option value="Customer Not Interested">Customer Not Interested</option>
+                <option value="Customer Not Came">Customer Not Came</option>
+                <option value="Ordered cannot be fulfilled by SGM">Ordered cannot be fulfilled by SGM</option>
+            </select>
+        </div>
+        <button class="add-btn" id="saveEditBtn" onclick="saveEditedOrder()" style="margin-top:0;">
+            <i class="fa-solid fa-floppy-disk"></i> Update & Save Changes
+        </button>
+    </div>
+</div>
+
+<!-- ================= BEFORE EDIT HISTORY MODAL ================= -->
+<div class="modal-overlay" id="historyModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-clock-rotate-left" style="color:#d97706;"></i> Edit History (Before Edit)</h3>
+            <button class="close-modal" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="historyContent"></div>
+    </div>
+</div>
+
+<script>
+    // ================= PWA INSTALLATION LOGIC =================
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('installAppBtn');
+        if (installBtn) {
+            installBtn.style.display = 'inline-flex';
+        }
+    });
+
+    async function installPWA() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                const installBtn = document.getElementById('installAppBtn');
+                if (installBtn) installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        } else {
+            alert("Chrome menu (⋮) me jakar 'Install SGM Orders' ya 'Add to Home Screen' select karein!");
+        }
+    }
+
+    // Inline Service Worker Registration for PWA Standalone Support
+    if ('serviceWorker' in navigator) {
+        const swBlob = new Blob([`
+            self.addEventListener('install', e => self.skipWaiting());
+            self.addEventListener('activate', e => self.clients.claim());
+            self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+        `], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+
+    // Admin PIN
+    const ADMIN_PIN = "1234";
+
+    // Firebase Config (Configured)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAA7HYW0-3-whwQTrX_QWJPfHaKZLEkbeoPw",
+        authDomain: "sgm-order-supply-manager.firebaseapp.com",
+        projectId: "sgm-order-supply-manager",
+        storageBucket: "sgm-order-supply-manager.firebasestorage.app",
+        messagingSenderId: "805701794171",
+        appId: "1:805701794171:web:5a4382eca9a6cbcccfecde"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    const ordersCol = db.collection("orders");
+
+    let allOrdersData = [];
+
+    // Helper: PIN Verification
+    function verifyAdminPIN() {
+        const entered = prompt("🔒 Kripya Admin PIN daalein:");
+        if (entered === null) return false;
+        if (entered.trim() === ADMIN_PIN) {
+            return true;
+        } else {
+            alert("❌ Galat PIN! Access Denied.");
+            return false;
+        }
+    }
+
+    // Dynamic Multi-Item Row Handlers
+    function addNewItemRow(containerId, nameVal = "", qtyVal = "") {
+        const container = document.getElementById(containerId);
+        const row = document.createElement("div");
+        row.className = "item-row";
+        row.innerHTML = `
+            <input type="text" name="itemName" placeholder="Item Name" value="${nameVal}" required>
+            <input type="text" name="itemQty" placeholder="Quantity / Remarks" value="${qtyVal}">
+            <button type="button" class="btn-remove-row" onclick="removeItemRow(this)"><i class="fa-regular fa-trash-can"></i></button>
+        `;
+        container.appendChild(row);
+    }
+
+    function removeItemRow(btn) {
+        const container = btn.closest(".multi-items-box").querySelector("#itemsContainer, #editItemsContainer");
+        if (container.querySelectorAll(".item-row").length > 1) {
+            btn.closest(".item-row").remove();
+        } else {
+            alert("Kam se kam 1 item hona zaroori hai!");
+        }
+    }
+
+    function getItemsFromContainer(containerId) {
+        const container = document.getElementById(containerId);
+        const rows = container.querySelectorAll(".item-row");
+        const items = [];
+        rows.forEach(r => {
+            const name = r.querySelector('input[name="itemName"]').value.trim();
+            const qty = r.querySelector('input[name="itemQty"]').value.trim();
+            if (name) {
+                items.push({ name, qty });
+            }
+        });
+        return items;
+    }
+
+    // Normalize Items (Backward Compatible)
+    function normalizeItems(entry) {
+        if (Array.isArray(entry.items) && entry.items.length > 0) {
+            return entry.items;
+        }
+        if (entry.item) {
+            return [{ name: entry.item, qty: entry.qty || '' }];
+        }
+        return [{ name: 'Unknown Item', qty: '' }];
+    }
+
+    // Format Items HTML
+    function formatItemsHtml(items) {
+        let html = '<ul class="items-display-list">';
+        items.forEach((it, idx) => {
+            const qtyBadge = it.qty ? `<span class="item-pill-qty">${it.qty}</span>` : '';
+            html += `<li><span>${idx + 1}.</span> <span class="item-pill-name">${it.name}</span> ${qtyBadge}</li>`;
+        });
+        html += '</ul>';
+        return html;
+    }
+
+    function getItemsPlainText(items) {
+        return items.map(i => i.qty ? `${i.name} (${i.qty})` : i.name).join(', ');
+    }
+
+    // 1. SMART ORDER ID GENERATOR
+    function generateOrderId() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        return `SGM-${year}${month}${day}-${hours}${mins}${secs}`;
+    }
+
+    function getDisplayOrderId(entry) {
+        if (entry.orderId) return entry.orderId;
+        if (entry.createdAt && entry.createdAt.seconds) {
+            const d = new Date(entry.createdAt.seconds * 1000);
+            return `SGM-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${entry.id.slice(0,4).toUpperCase()}`;
+        }
+        return `SGM-${entry.id.slice(0,6).toUpperCase()}`;
+    }
+
+    // 2. AGING / OVERDUE ALERT
+    function getAgingBadgeHtml(entry) {
+        const isPending = (entry.status === 'Incomplete' || entry.status === 'On Going');
+        if (!isPending) return '';
+
+        let createdAtMs = Date.now();
+        if (entry.createdAt && entry.createdAt.seconds) {
+            createdAtMs = entry.createdAt.seconds * 1000;
+        }
+
+        const diffHours = (Date.now() - createdAtMs) / (1000 * 60 * 60);
+
+        if (diffHours >= 48) {
+            const days = Math.floor(diffHours / 24);
+            return `<br><span class="aging-badge aging-danger"><i class="fa-solid fa-triangle-exclamation"></i> Overdue ${days}d+</span>`;
+        } else if (diffHours >= 24) {
+            return `<br><span class="aging-badge aging-warning"><i class="fa-regular fa-clock"></i> Pending 1d</span>`;
+        }
+        return '';
+    }
+
+    // 3. REAL-TIME LISTENER
+    ordersCol.orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+        allOrdersData = [];
+        let totalDeposit = 0;
+        let activeCount = 0;
+        let completeCount = 0;
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            data.id = doc.id;
+            allOrdersData.push(data);
+
+            const dep = Number(data.deposit) || 0;
+            totalDeposit += dep;
+
+            if (data.status === 'Complete') {
+                completeCount++;
+            } else if (data.status === 'Incomplete' || data.status === 'On Going') {
+                activeCount++;
+            }
+        });
+
+        // Update KPI Pills Bar
+        document.getElementById("kpiTotal").innerText = allOrdersData.length;
+        document.getElementById("kpiActive").innerText = activeCount;
+        document.getElementById("kpiComplete").innerText = completeCount;
+        document.getElementById("kpiDeposit").innerText = `₹${totalDeposit.toLocaleString('en-IN')}`;
+
+        filterAndRender();
+    }, (error) => {
+        console.error("Firebase Error:", error);
+        document.getElementById("reminderTableBody").innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444; padding: 25px;"><i class="fa-solid fa-triangle-exclamation"></i> Error loading data! Check rules.</td></tr>`;
+    });
+
+    // 4. SEARCH & FILTER
+    function filterAndRender() {
+        const query = document.getElementById("searchInput").value.toLowerCase().trim();
+        const statusFilter = document.getElementById("statusFilter").value;
+
+        const filtered = allOrdersData.filter(item => {
+            const displayId = getDisplayOrderId(item).toLowerCase();
+            const items = normalizeItems(item);
+            const itemsText = getItemsPlainText(items).toLowerCase();
+
+            const matchesStatus = (statusFilter === 'ALL') || (item.status === statusFilter);
+            const matchesQuery = 
+                (item.name && item.name.toLowerCase().includes(query)) ||
+                (item.phone && item.phone.toLowerCase().includes(query)) ||
+                itemsText.includes(query) ||
+                displayId.includes(query);
+            return matchesStatus && matchesQuery;
+        });
+
+        renderDesktopTable(filtered);
+        renderMobileCards(filtered);
+    }
+
+    // Render Table (Desktop)
+    function renderDesktopTable(records) {
+        const tbody = document.getElementById("reminderTableBody");
+        tbody.innerHTML = "";
+
+        if (records.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px; color:#64748b;"><i class="fa-regular fa-folder-open" style="font-size: 20px; display:block; margin-bottom: 6px;"></i>Koi record nahi mila.</td></tr>`;
+            return;
+        }
+
+        records.forEach((entry) => {
+            const displayId = getDisplayOrderId(entry);
+            const depositDisplay = entry.deposit ? `₹${Number(entry.deposit).toLocaleString('en-IN')}` : '₹0';
+            const statusClass = getStatusClass(entry.status);
+            const items = normalizeItems(entry);
+            const itemsHtml = formatItemsHtml(items);
+            const itemsPlainText = getItemsPlainText(items);
+            const waMsg = encodeURIComponent(`Namaste ${entry.name || ''} ji! SGM se aapka order [${itemsPlainText}] ka status: ${entry.status}. Order ID: ${displayId}.`);
+            const agingHtml = getAgingBadgeHtml(entry);
+
+            let editedHtml = '';
+            if (entry.isEdited) {
+                editedHtml = `<br><span class="edited-badge" onclick="showHistory('${entry.id}')" title="Click to view history"><i class="fa-solid fa-clock-rotate-left"></i> Edited</span>`;
+            }
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>
+                    <span class="order-id-badge">${displayId}</span>
+                    <div style="font-size:11.5px; color:#64748b; margin-top:3px;"><i class="fa-regular fa-calendar"></i> ${entry.date || '-'}</div>
+                    ${agingHtml}
+                    ${editedHtml}
+                </td>
+                <td><strong>${entry.name || ''}</strong></td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <a href="tel:${entry.phone}" style="color:#2563eb; font-weight:700; text-decoration:none;">${entry.phone || 'N/A'}</a>
+                        ${entry.phone ? `<a href="https://wa.me/91${entry.phone.replace(/[^0-9]/g, '')}?text=${waMsg}" target="_blank" class="btn-action btn-wa" title="WhatsApp Message"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
+                    </div>
+                </td>
+                <td>${itemsHtml}</td>
+                <td><span class="deposit-amount">${depositDisplay}</span></td>
+                <td>
+                    <select class="status-select ${statusClass}" onchange="updateStatus('${entry.id}', this.value)">
+                        ${renderStatusOptions(entry.status)}
+                    </select>
+                </td>
+                <td>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-action btn-copy" onclick="repeatOrder('${entry.id}')" title="Repeat/Duplicate"><i class="fa-solid fa-copy"></i></button>
+                        <button class="btn-action btn-edit" onclick="openEditModalWithPIN('${entry.id}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteEntryWithPIN('${entry.id}')"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Render Cards (Mobile)
+    function renderMobileCards(records) {
+        const cardsContainer = document.getElementById("mobileCardsContainer");
+        cardsContainer.innerHTML = "";
+
+        if (records.length === 0) {
+            cardsContainer.innerHTML = `<div style="text-align:center; padding: 25px; color:#64748b; background:#f8fafc; border-radius:10px;"><i class="fa-regular fa-folder-open" style="font-size: 22px; display:block; margin-bottom: 6px;"></i>Koi record nahi mila.</div>`;
+            return;
+        }
+
+        records.forEach((entry) => {
+            const displayId = getDisplayOrderId(entry);
+            const depositDisplay = entry.deposit ? `₹${Number(entry.deposit).toLocaleString('en-IN')}` : '₹0';
+            const statusClass = getStatusClass(entry.status);
+            const items = normalizeItems(entry);
+            const itemsHtml = formatItemsHtml(items);
+            const itemsPlainText = getItemsPlainText(items);
+            const waMsg = encodeURIComponent(`Namaste ${entry.name || ''} ji! SGM se aapka order [${itemsPlainText}] ka status: ${entry.status}. Order ID: ${displayId}.`);
+            const agingHtml = getAgingBadgeHtml(entry);
+
+            let editedHtml = '';
+            if (entry.isEdited) {
+                editedHtml = `<span class="edited-badge" onclick="showHistory('${entry.id}')"><i class="fa-solid fa-clock-rotate-left"></i> Edited</span>`;
+            }
+
+            const card = document.createElement("div");
+            card.className = "order-card";
+            card.innerHTML = `
+                <div class="card-header-row">
+                    <div>
+                        <span class="order-id-badge">${displayId}</span>
+                        <div style="font-size:15px; font-weight:800; color:#0f172a; margin-top:3px;">${entry.name || 'Customer'}</div>
+                        <div style="font-size:11.5px; color:#64748b;"><i class="fa-regular fa-calendar"></i> ${entry.date || '-'}</div>
+                        ${agingHtml}
+                    </div>
+                    <div style="text-align:right;">
+                        ${editedHtml}
+                        <div style="margin-top:6px; display:flex; gap:4px; justify-content:flex-end;">
+                            ${entry.phone ? `
+                                <a href="tel:${entry.phone}" class="btn-action btn-edit" style="text-decoration:none;"><i class="fa-solid fa-phone"></i></a>
+                                <a href="https://wa.me/91${entry.phone.replace(/[^0-9]/g, '')}?text=${waMsg}" target="_blank" class="btn-action btn-wa"><i class="fa-brands fa-whatsapp"></i></a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-items-box">
+                    <span class="card-label">Items Required:</span>
+                    ${itemsHtml}
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #e2e8f0; padding-top:6px; margin-top:8px;">
+                        <span class="card-label" style="margin:0;">Advance Jama:</span>
+                        <span class="deposit-amount">${depositDisplay}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="card-label" style="margin-bottom:3px; display:block;">Change Status:</label>
+                    <select class="status-select ${statusClass}" onchange="updateStatus('${entry.id}', this.value)">
+                        ${renderStatusOptions(entry.status)}
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f1f5f9; padding-top:8px;">
+                    <button class="btn-action btn-copy" onclick="repeatOrder('${entry.id}')"><i class="fa-solid fa-copy"></i> Repeat</button>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-action btn-edit" onclick="openEditModalWithPIN('${entry.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteEntryWithPIN('${entry.id}')"><i class="fa-regular fa-trash-can"></i> Delete</button>
+                    </div>
+                </div>
+            `;
+            cardsContainer.appendChild(card);
+        });
+    }
+
+    function renderStatusOptions(currentStatus) {
+        const statuses = [
+            "Incomplete",
+            "On Going",
+            "Complete",
+            "Customer Not Interested",
+            "Customer Not Came",
+            "Ordered cannot be fulfilled by SGM"
+        ];
+        return statuses.map(st => `<option value="${st}" ${currentStatus === st ? 'selected' : ''}>${st}</option>`).join('');
+    }
+
+    // 5. ADD NEW ORDER
+    async function addEntry() {
+        const name = document.getElementById("custName").value.trim();
+        const phone = document.getElementById("custPhone").value.trim();
+        const deposit = document.getElementById("custDeposit").value.trim();
+        const status = document.getElementById("custStatus").value;
+        const items = getItemsFromContainer("itemsContainer");
+        const btn = document.getElementById("submitBtn");
+
+        if (!name) {
+            alert("Kripya Customer Ka Naam zaroor bhare!");
+            return;
+        }
+
+        if (items.length === 0) {
+            alert("Kripya kam se kam 1 Item zaroor add karein!");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Saving Order...`;
+
+        const newOrderData = {
+            orderId: generateOrderId(),
+            name: name,
+            phone: phone,
+            items: items,
+            item: items[0].name,
+            qty: items[0].qty || '',
+            deposit: deposit ? parseFloat(deposit) : 0,
+            status: status,
+            isEdited: false,
+            editHistory: [],
+            date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            await ordersCol.add(newOrderData);
+            document.getElementById("custName").value = '';
+            document.getElementById("custPhone").value = '';
+            document.getElementById("custDeposit").value = '';
+            document.getElementById("custStatus").value = 'Incomplete';
+            
+            document.getElementById("itemsContainer").innerHTML = `
+                <div class="item-row">
+                    <input type="text" name="itemName" placeholder="Item Name (e.g. Paracetamol 650)" required>
+                    <input type="text" name="itemQty" placeholder="Quantity / Remarks (e.g. 2 Strips)">
+                    <button type="button" class="btn-remove-row" onclick="removeItemRow(this)"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+            `;
+        } catch (err) {
+            alert("Error adding order: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> Add Order Reminder`;
+        }
+    }
+
+    // 6. REPEAT ORDER
+    function repeatOrder(docId) {
+        const order = allOrdersData.find(o => o.id === docId);
+        if (!order) return;
+
+        document.getElementById("custName").value = order.name || '';
+        document.getElementById("custPhone").value = order.phone || '';
+        document.getElementById("custDeposit").value = '';
+        document.getElementById("custStatus").value = 'Incomplete';
+
+        const items = normalizeItems(order);
+        const container = document.getElementById("itemsContainer");
+        container.innerHTML = "";
+        items.forEach(it => addNewItemRow('itemsContainer', it.name, it.qty));
+
+        scrollToForm();
+        alert(`✅ Order details auto-filled for '${order.name}'. Naya deposit/qty check karke Add karein.`);
+    }
+
+    // 7. EDIT MODAL WITH PIN
+    function openEditModalWithPIN(docId) {
+        if (!verifyAdminPIN()) return;
+
+        const order = allOrdersData.find(o => o.id === docId);
+        if (!order) return;
+
+        document.getElementById("editDocId").value = docId;
+        document.getElementById("editCustName").value = order.name || '';
+        document.getElementById("editCustPhone").value = order.phone || '';
+        document.getElementById("editCustDeposit").value = order.deposit || 0;
+        document.getElementById("editCustStatus").value = order.status || 'Incomplete';
+
+        const items = normalizeItems(order);
+        const container = document.getElementById("editItemsContainer");
+        container.innerHTML = "";
+        items.forEach(it => addNewItemRow('editItemsContainer', it.name, it.qty));
+
+        document.getElementById("editModal").classList.add("active");
+    }
+
+    function closeEditModal() {
+        document.getElementById("editModal").classList.remove("active");
+    }
+
+    async function saveEditedOrder() {
+        const docId = document.getElementById("editDocId").value;
+        const currentOrder = allOrdersData.find(o => o.id === docId);
+        if (!currentOrder) return;
+
+        const newName = document.getElementById("editCustName").value.trim();
+        const newPhone = document.getElementById("editCustPhone").value.trim();
+        const newDeposit = parseFloat(document.getElementById("editCustDeposit").value) || 0;
+        const newStatus = document.getElementById("editCustStatus").value;
+        const newItems = getItemsFromContainer("editItemsContainer");
+
+        if (!newName) {
+            alert("Name cannot be empty!");
+            return;
+        }
+
+        if (newItems.length === 0) {
+            alert("At least 1 item is required!");
+            return;
+        }
+
+        const previousSnapshot = {
+            name: currentOrder.name || '',
+            phone: currentOrder.phone || '',
+            items: normalizeItems(currentOrder),
+            deposit: currentOrder.deposit || 0,
+            status: currentOrder.status || '',
+            editedTimestamp: new Date().toLocaleString('en-IN')
+        };
+
+        const existingHistory = currentOrder.editHistory || [];
+        existingHistory.unshift(previousSnapshot);
+
+        const btn = document.getElementById("saveEditBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...`;
+
+        try {
+            await ordersCol.doc(docId).update({
+                name: newName,
+                phone: newPhone,
+                items: newItems,
+                item: newItems[0].name,
+                qty: newItems[0].qty || '',
+                deposit: newDeposit,
+                status: newStatus,
+                isEdited: true,
+                editHistory: existingHistory,
+                lastModifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            closeEditModal();
+        } catch (err) {
+            alert("Update fail ho gaya: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Update & Save Changes`;
+        }
+    }
+
+    async function deleteEntryWithPIN(id) {
+        if (!verifyAdminPIN()) return;
+
+        if (confirm("Kya aap sach me is record ko delete karna chahte hain?")) {
+            try {
+                await ordersCol.doc(id).delete();
+            } catch (err) {
+                alert("Delete fail ho gaya: " + err.message);
+            }
+        }
+    }
+
+    // 8. SHOW HISTORY
+    function showHistory(docId) {
+        const order = allOrdersData.find(o => o.id === docId);
+        if (!order || !order.editHistory || order.editHistory.length === 0) {
+            alert("No previous edit logs found.");
+            return;
+        }
+
+        const container = document.getElementById("historyContent");
+        container.innerHTML = "";
+
+        order.editHistory.forEach((h, index) => {
+            const items = normalizeItems(h);
+            const itemsText = getItemsPlainText(items);
+
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "history-item";
+            itemDiv.innerHTML = `
+                <div class="history-time"><i class="fa-regular fa-clock"></i> Edited on: <strong>${h.editedTimestamp}</strong> (Log #${order.editHistory.length - index})</div>
+                <div class="history-data-line"><strong>Name:</strong> ${h.name}</div>
+                <div class="history-data-line"><strong>Phone:</strong> ${h.phone || 'N/A'}</div>
+                <div class="history-data-line"><strong>Items was:</strong> ${itemsText}</div>
+                <div class="history-data-line"><strong>Deposit:</strong> ₹${Number(h.deposit).toLocaleString('en-IN')}</div>
+                <div class="history-data-line"><strong>Status was:</strong> <span style="font-weight:700; color:#b45309;">${h.status}</span></div>
+            `;
+            container.appendChild(itemDiv);
+        });
+
+        document.getElementById("historyModal").classList.add("active");
+    }
+
+    function closeHistoryModal() {
+        document.getElementById("historyModal").classList.remove("active");
+    }
+
+    // 9. STATUS UPDATE
+    async function updateStatus(id, newStatus) {
+        try {
+            await ordersCol.doc(id).update({ status: newStatus });
+        } catch (err) {
+            alert("Status update failed: " + err.message);
+        }
+    }
+
+    // 10. SCROLL & EXPORT
+    function scrollToForm() {
+        document.getElementById("formSection").scrollIntoView({ behavior: 'smooth' });
+        document.getElementById("custName").focus();
+    }
+
+    function exportToCSV() {
+        if (allOrdersData.length === 0) {
+            alert("Koi data export karne ke liye nahi hai!");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Order ID,Date,Customer Name,Phone,Items,Deposit,Status,Is Edited\n";
+
+        allOrdersData.forEach(row => {
+            const displayId = getDisplayOrderId(row);
+            const items = normalizeItems(row);
+            const escapedName = `"${(row.name || '').replace(/"/g, '""')}"`;
+            const escapedItems = `"${getItemsPlainText(items).replace(/"/g, '""')}"`;
+            csvContent += `${displayId},${row.date || ''},${escapedName},${row.phone || ''},${escapedItems},${row.deposit || 0},${row.status || ''},${row.isEdited ? 'YES' : 'NO'}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `SGM_Orders_Export_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function getStatusClass(status) {
+        if (status === 'Incomplete') return 'status-Incomplete';
+        if (status === 'On Going') return 'status-Ongoing';
+        if (status === 'Complete') return 'status-Complete';
+        if (status === 'Customer Not Interested') return 'status-NotInterested';
+        if (status === 'Customer Not Came') return 'status-NotCame';
+        if (status === 'Ordered cannot be fulfilled by SGM') return 'status-CannotFulfilled';
+        return '';
+    }
+</script>
+
+</body>
+</html>
