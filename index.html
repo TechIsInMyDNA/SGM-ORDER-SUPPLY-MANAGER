@@ -422,6 +422,20 @@
             border: 1px solid #e2e8f0;
         }
 
+        .supplier-badge {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
         .order-id-badge {
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
             font-weight: 800;
@@ -518,6 +532,8 @@
         .status-Ongoing { background-color: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
         .status-Informed { background-color: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
         .status-ReadyHaiBasDenaHai { background-color: #ccfbf1; color: #0f766e; border-color: #99f6e4; }
+        .status-PartialComplete { background-color: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+        .status-TriedToInformNoSuccess { background-color: #ffe4e6; color: #be123c; border-color: #fecdd3; }
         .status-InquiryKrkeBatanaHaiBas { background-color: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
         .status-Complete { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
         .status-NotInterested { background-color: #fee2e2; color: #b91c1c; border-color: #fecaca; }
@@ -700,6 +716,10 @@
                 <input type="tel" id="custPhone" placeholder="Mobile No.">
             </div>
             <div class="form-group">
+                <label><i class="fa-solid fa-truck-ramp-box"></i> Kaha se maal aara hai (Supplier)</label>
+                <input type="text" id="custSupplier" placeholder="Supplier / Agency Name">
+            </div>
+            <div class="form-group">
                 <label><i class="fa-solid fa-indian-rupee-sign"></i> Deposit (₹)</label>
                 <input type="number" id="custDeposit" placeholder="Advance Jama">
             </div>
@@ -710,6 +730,8 @@
                     <option value="On Going">On Going</option>
                     <option value="Informed">Informed</option>
                     <option value="Ready hai bas dena hai">Ready hai bas dena hai</option>
+                    <option value="Partial Complete">Partial Complete</option>
+                    <option value="Tried to inform no success">Tried to inform no success</option>
                     <option value="Inquiry krke batana hai bas">Inquiry krke batana hai bas</option>
                     <option value="Complete">Complete</option>
                     <option value="Customer Not Interested">Customer Not Interested</option>
@@ -744,7 +766,7 @@
     <div class="toolbar">
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="Search by Name, Phone, Item, or ID..." oninput="filterAndRender()">
+            <input type="text" id="searchInput" placeholder="Search by Name, Phone, Supplier, Item, or ID..." oninput="filterAndRender()">
         </div>
         <select class="filter-select" id="statusFilter" onchange="filterAndRender()">
             <option value="ALL">All Statuses</option>
@@ -752,6 +774,8 @@
             <option value="On Going">On Going</option>
             <option value="Informed">Informed</option>
             <option value="Ready hai bas dena hai">Ready hai bas dena hai</option>
+            <option value="Partial Complete">Partial Complete</option>
+            <option value="Tried to inform no success">Tried to inform no success</option>
             <option value="Inquiry krke batana hai bas">Inquiry krke batana hai bas</option>
             <option value="Complete">Complete</option>
             <option value="Customer Not Interested">Customer Not Interested</option>
@@ -768,6 +792,7 @@
                     <th>Order ID & Date</th>
                     <th>Customer Name</th>
                     <th>Phone / WhatsApp</th>
+                    <th>Supplier / Source</th>
                     <th>Items Required & Qty</th>
                     <th>Deposit</th>
                     <th>Status</th>
@@ -775,7 +800,7 @@
                 </tr>
             </thead>
             <tbody id="reminderTableBody">
-                <tr><td colspan="7" style="text-align:center; padding: 25px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
+                <tr><td colspan="8" style="text-align:center; padding: 25px; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
             </tbody>
         </table>
     </div>
@@ -806,6 +831,10 @@
             <label>Phone Number</label>
             <input type="tel" id="editCustPhone">
         </div>
+        <div class="form-group" style="margin-bottom:10px;">
+            <label><i class="fa-solid fa-truck-ramp-box"></i> Kaha se maal aara hai (Supplier)</label>
+            <input type="text" id="editCustSupplier" placeholder="Supplier / Agency Name">
+        </div>
 
         <div class="multi-items-box" style="margin-bottom:10px;">
             <div class="multi-item-header">
@@ -828,6 +857,8 @@
                 <option value="On Going">On Going</option>
                 <option value="Informed">Informed</option>
                 <option value="Ready hai bas dena hai">Ready hai bas dena hai</option>
+                <option value="Partial Complete">Partial Complete</option>
+                <option value="Tried to inform no success">Tried to inform no success</option>
                 <option value="Inquiry krke batana hai bas">Inquiry krke batana hai bas</option>
                 <option value="Complete">Complete</option>
                 <option value="Customer Not Interested">Customer Not Interested</option>
@@ -887,6 +918,7 @@
         navigator.serviceWorker.register(swUrl).catch(() => {});
     }
 
+    // 🔒 Admin PIN Set Karein:
     const ADMIN_PIN = "1441";
 
     const firebaseConfig = {
@@ -1002,6 +1034,8 @@
             entry.status === 'On Going' || 
             entry.status === 'Informed' || 
             entry.status === 'Ready hai bas dena hai' ||
+            entry.status === 'Partial Complete' ||
+            entry.status === 'Tried to inform no success' ||
             entry.status === 'Inquiry krke batana hai bas'
         );
         if (!isPending) return '';
@@ -1043,6 +1077,8 @@
                 data.status === 'On Going' || 
                 data.status === 'Informed' || 
                 data.status === 'Ready hai bas dena hai' ||
+                data.status === 'Partial Complete' ||
+                data.status === 'Tried to inform no success' ||
                 data.status === 'Inquiry krke batana hai bas'
             ) {
                 activeCount++;
@@ -1057,7 +1093,7 @@
         filterAndRender();
     }, (error) => {
         console.error("Firebase Error:", error);
-        document.getElementById("reminderTableBody").innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444; padding: 25px;"><i class="fa-solid fa-triangle-exclamation"></i> Error loading data! Check rules.</td></tr>`;
+        document.getElementById("reminderTableBody").innerHTML = `<tr><td colspan="8" style="text-align:center; color:#ef4444; padding: 25px;"><i class="fa-solid fa-triangle-exclamation"></i> Error loading data! Check rules.</td></tr>`;
     });
 
     function filterAndRender() {
@@ -1073,6 +1109,7 @@
             const matchesQuery = 
                 (item.name && item.name.toLowerCase().includes(query)) ||
                 (item.phone && item.phone.toLowerCase().includes(query)) ||
+                (item.supplier && item.supplier.toLowerCase().includes(query)) ||
                 itemsText.includes(query) ||
                 displayId.includes(query);
             return matchesStatus && matchesQuery;
@@ -1087,7 +1124,7 @@
         tbody.innerHTML = "";
 
         if (records.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px; color:#64748b;"><i class="fa-regular fa-folder-open" style="font-size: 20px; display:block; margin-bottom: 6px;"></i>Koi record nahi mila.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 30px; color:#64748b;"><i class="fa-regular fa-folder-open" style="font-size: 20px; display:block; margin-bottom: 6px;"></i>Koi record nahi mila.</td></tr>`;
             return;
         }
 
@@ -1120,6 +1157,9 @@
                         <a href="tel:${entry.phone}" style="color:#2563eb; font-weight:700; text-decoration:none;">${entry.phone || 'N/A'}</a>
                         ${entry.phone ? `<a href="https://wa.me/91${entry.phone.replace(/[^0-9]/g, '')}?text=${waMsg}" target="_blank" class="btn-action btn-wa" title="WhatsApp Message"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
                     </div>
+                </td>
+                <td>
+                    ${entry.supplier ? `<span class="supplier-badge"><i class="fa-solid fa-truck"></i> ${entry.supplier}</span>` : '<span style="color:#94a3b8; font-size:12px;">-</span>'}
                 </td>
                 <td>${itemsHtml}</td>
                 <td><span class="deposit-amount">${depositDisplay}</span></td>
@@ -1188,6 +1228,12 @@
                 <div class="card-items-box">
                     <span class="card-label">Items Required:</span>
                     ${itemsHtml}
+                    ${entry.supplier ? `
+                        <div style="margin-top:6px;">
+                            <span class="card-label" style="margin:0 0 2px 0;">Maal Kaha Se Aara Hai:</span>
+                            <span class="supplier-badge"><i class="fa-solid fa-truck"></i> ${entry.supplier}</span>
+                        </div>
+                    ` : ''}
                     <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #e2e8f0; padding-top:6px; margin-top:8px;">
                         <span class="card-label" style="margin:0;">Advance Jama:</span>
                         <span class="deposit-amount">${depositDisplay}</span>
@@ -1219,6 +1265,8 @@
             "On Going",
             "Informed",
             "Ready hai bas dena hai",
+            "Partial Complete",
+            "Tried to inform no success",
             "Inquiry krke batana hai bas",
             "Complete",
             "Customer Not Interested",
@@ -1231,6 +1279,7 @@
     async function addEntry() {
         const name = document.getElementById("custName").value.trim();
         const phone = document.getElementById("custPhone").value.trim();
+        const supplier = document.getElementById("custSupplier").value.trim();
         const deposit = document.getElementById("custDeposit").value.trim();
         const status = document.getElementById("custStatus").value;
         const items = getItemsFromContainer("itemsContainer");
@@ -1253,6 +1302,7 @@
             orderId: generateOrderId(),
             name: name,
             phone: phone,
+            supplier: supplier,
             items: items,
             item: items[0].name,
             qty: items[0].qty || '',
@@ -1268,6 +1318,7 @@
             await ordersCol.add(newOrderData);
             document.getElementById("custName").value = '';
             document.getElementById("custPhone").value = '';
+            document.getElementById("custSupplier").value = '';
             document.getElementById("custDeposit").value = '';
             document.getElementById("custStatus").value = 'Incomplete';
             
@@ -1292,6 +1343,7 @@
 
         document.getElementById("custName").value = order.name || '';
         document.getElementById("custPhone").value = order.phone || '';
+        document.getElementById("custSupplier").value = order.supplier || '';
         document.getElementById("custDeposit").value = '';
         document.getElementById("custStatus").value = 'Incomplete';
 
@@ -1301,7 +1353,7 @@
         items.forEach(it => addNewItemRow('itemsContainer', it.name, it.qty));
 
         scrollToForm();
-        alert(`✅ Order details auto-filled for '${order.name}'. Naya deposit/qty check karke Add karein.`);
+        alert(`✅ Order details auto-filled for '${order.name}'. Naya deposit/qty/supplier check karke Add karein.`);
     }
 
     function openEditModalWithPIN(docId) {
@@ -1313,6 +1365,7 @@
         document.getElementById("editDocId").value = docId;
         document.getElementById("editCustName").value = order.name || '';
         document.getElementById("editCustPhone").value = order.phone || '';
+        document.getElementById("editCustSupplier").value = order.supplier || '';
         document.getElementById("editCustDeposit").value = order.deposit || 0;
         document.getElementById("editCustStatus").value = order.status || 'Incomplete';
 
@@ -1335,6 +1388,7 @@
 
         const newName = document.getElementById("editCustName").value.trim();
         const newPhone = document.getElementById("editCustPhone").value.trim();
+        const newSupplier = document.getElementById("editCustSupplier").value.trim();
         const newDeposit = parseFloat(document.getElementById("editCustDeposit").value) || 0;
         const newStatus = document.getElementById("editCustStatus").value;
         const newItems = getItemsFromContainer("editItemsContainer");
@@ -1352,6 +1406,7 @@
         const previousSnapshot = {
             name: currentOrder.name || '',
             phone: currentOrder.phone || '',
+            supplier: currentOrder.supplier || '',
             items: normalizeItems(currentOrder),
             deposit: currentOrder.deposit || 0,
             status: currentOrder.status || '',
@@ -1369,6 +1424,7 @@
             await ordersCol.doc(docId).update({
                 name: newName,
                 phone: newPhone,
+                supplier: newSupplier,
                 items: newItems,
                 item: newItems[0].name,
                 qty: newItems[0].qty || '',
@@ -1419,6 +1475,7 @@
                 <div class="history-time"><i class="fa-regular fa-clock"></i> Edited on: <strong>${h.editedTimestamp}</strong> (Log #${order.editHistory.length - index})</div>
                 <div class="history-data-line"><strong>Name:</strong> ${h.name}</div>
                 <div class="history-data-line"><strong>Phone:</strong> ${h.phone || 'N/A'}</div>
+                <div class="history-data-line"><strong>Supplier:</strong> ${h.supplier || 'N/A'}</div>
                 <div class="history-data-line"><strong>Items was:</strong> ${itemsText}</div>
                 <div class="history-data-line"><strong>Deposit:</strong> ₹${Number(h.deposit).toLocaleString('en-IN')}</div>
                 <div class="history-data-line"><strong>Status was:</strong> <span style="font-weight:700; color:#b45309;">${h.status}</span></div>
@@ -1453,14 +1510,15 @@
         }
 
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Order ID,Date,Customer Name,Phone,Items,Deposit,Status,Is Edited\n";
+        csvContent += "Order ID,Date,Customer Name,Phone,Supplier,Items,Deposit,Status,Is Edited\n";
 
         allOrdersData.forEach(row => {
             const displayId = getDisplayOrderId(row);
             const items = normalizeItems(row);
             const escapedName = `"${(row.name || '').replace(/"/g, '""')}"`;
+            const escapedSupplier = `"${(row.supplier || '').replace(/"/g, '""')}"`;
             const escapedItems = `"${getItemsPlainText(items).replace(/"/g, '""')}"`;
-            csvContent += `${displayId},${row.date || ''},${escapedName},${row.phone || ''},${escapedItems},${row.deposit || 0},${row.status || ''},${row.isEdited ? 'YES' : 'NO'}\n`;
+            csvContent += `${displayId},${row.date || ''},${escapedName},${row.phone || ''},${escapedSupplier},${escapedItems},${row.deposit || 0},${row.status || ''},${row.isEdited ? 'YES' : 'NO'}\n`;
         });
 
         const encodedUri = encodeURI(csvContent);
@@ -1477,6 +1535,8 @@
         if (status === 'On Going') return 'status-Ongoing';
         if (status === 'Informed') return 'status-Informed';
         if (status === 'Ready hai bas dena hai') return 'status-ReadyHaiBasDenaHai';
+        if (status === 'Partial Complete') return 'status-PartialComplete';
+        if (status === 'Tried to inform no success') return 'status-TriedToInformNoSuccess';
         if (status === 'Inquiry krke batana hai bas') return 'status-InquiryKrkeBatanaHaiBas';
         if (status === 'Complete') return 'status-Complete';
         if (status === 'Customer Not Interested') return 'status-NotInterested';
