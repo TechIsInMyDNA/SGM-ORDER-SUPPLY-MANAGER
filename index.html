@@ -288,15 +288,45 @@
         }
         .btn-add-item-row:hover { background: #2563eb; color: white; }
 
+        /* Multi-Item Row Inputs */
         .item-row {
             display: flex;
             gap: 8px;
-            align-items: center;
-            margin-bottom: 8px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
 
-        .item-row input[name="itemName"] { flex: 2; }
-        .item-row input[name="itemQty"] { flex: 1.2; }
+        .item-fields-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .item-row-top {
+            display: flex;
+            gap: 8px;
+        }
+
+        .item-row-top input[name="itemName"] { flex: 2; }
+        .item-row-top input[name="itemQty"] { flex: 1.2; }
+        
+        .item-fields-wrap input[name="itemRemarks"] {
+            font-size: 12px;
+            padding: 7px 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+
+        .item-fields-wrap input[name="itemRemarks"]:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+        }
         
         .btn-remove-row {
             background: #fee2e2;
@@ -312,6 +342,7 @@
             font-size: 13px;
             flex-shrink: 0;
             transition: 0.2s;
+            margin-top: 2px;
         }
         .btn-remove-row:hover { background: #dc2626; color: white; }
 
@@ -398,7 +429,7 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             margin: 0;
             padding: 0;
         }
@@ -406,9 +437,6 @@
         .items-display-list li {
             font-size: 12.5px;
             color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .item-pill-name { font-weight: 700; color: #0f172a; }
@@ -420,6 +448,15 @@
             font-size: 11px;
             font-weight: 600;
             border: 1px solid #e2e8f0;
+            margin-left: 4px;
+        }
+
+        .item-pill-remark {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+            padding-left: 14px;
+            font-style: italic;
         }
 
         .supplier-badge {
@@ -638,7 +675,8 @@
             .brand-logo-img { width: 38px; height: 38px; }
             .form-grid-top { grid-template-columns: 1fr; gap: 8px; }
             .item-row { flex-direction: column; align-items: stretch; background: #f1f5f9; padding: 8px; border-radius: 8px; }
-            .item-row input[name="itemName"], .item-row input[name="itemQty"] { width: 100%; }
+            .item-row-top { flex-direction: column; gap: 6px; }
+            .item-row-top input[name="itemName"], .item-row-top input[name="itemQty"], .item-fields-wrap input[name="itemRemarks"] { width: 100%; }
             .btn-remove-row { width: 100%; height: 32px; margin-top: 4px; }
             .desktop-table-container { display: none; }
             .mobile-cards-container { display: flex; }
@@ -741,6 +779,7 @@
             </div>
         </div>
 
+        <!-- Multi-Item Rows Container with Remarks -->
         <div class="multi-items-box">
             <div class="multi-item-header">
                 <span><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Items / Medicines List</span>
@@ -750,8 +789,13 @@
             </div>
             <div id="itemsContainer">
                 <div class="item-row">
-                    <input type="text" name="itemName" placeholder="Item Name (e.g. Paracetamol 650)" required>
-                    <input type="text" name="itemQty" placeholder="Quantity / Remarks (e.g. 2 Strips)">
+                    <div class="item-fields-wrap">
+                        <div class="item-row-top">
+                            <input type="text" name="itemName" placeholder="Item Name (e.g. Paracetamol 650)" required>
+                            <input type="text" name="itemQty" placeholder="Quantity (e.g. 2 Strips)">
+                        </div>
+                        <input type="text" name="itemRemarks" placeholder="Item Remarks / Notes (e.g. Doctor's choice, Urgent, Brand)">
+                    </div>
                     <button type="button" class="btn-remove-row" onclick="removeItemRow(this)"><i class="fa-regular fa-trash-can"></i></button>
                 </div>
             </div>
@@ -766,7 +810,7 @@
     <div class="toolbar">
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="Search by Name, Phone, Supplier, Item, or ID..." oninput="filterAndRender()">
+            <input type="text" id="searchInput" placeholder="Search by Name, Phone, Supplier, Item, Remark, or ID..." oninput="filterAndRender()">
         </div>
         <select class="filter-select" id="statusFilter" onchange="filterAndRender()">
             <option value="ALL">All Statuses</option>
@@ -793,7 +837,7 @@
                     <th>Customer Name</th>
                     <th>Phone / WhatsApp</th>
                     <th>Supplier / Source</th>
-                    <th>Items Required & Qty</th>
+                    <th>Items Required, Qty & Remarks</th>
                     <th>Deposit</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -919,7 +963,7 @@
     }
 
     // 🔒 Admin PIN Set Karein:
-    const ADMIN_PIN = "1441";
+    const ADMIN_PIN = "1234";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAA7HYW0-3-whwQTrX_QWJPfHaKZLEkbeoPw",
@@ -949,13 +993,18 @@
         }
     }
 
-    function addNewItemRow(containerId, nameVal = "", qtyVal = "") {
+    function addNewItemRow(containerId, nameVal = "", qtyVal = "", remarksVal = "") {
         const container = document.getElementById(containerId);
         const row = document.createElement("div");
         row.className = "item-row";
         row.innerHTML = `
-            <input type="text" name="itemName" placeholder="Item Name" value="${nameVal}" required>
-            <input type="text" name="itemQty" placeholder="Quantity / Remarks" value="${qtyVal}">
+            <div class="item-fields-wrap">
+                <div class="item-row-top">
+                    <input type="text" name="itemName" placeholder="Item Name" value="${nameVal}" required>
+                    <input type="text" name="itemQty" placeholder="Quantity (e.g. 2 Strips)" value="${qtyVal}">
+                </div>
+                <input type="text" name="itemRemarks" placeholder="Item Remarks / Notes (e.g. Doctor's choice, Urgent, Brand)" value="${remarksVal}">
+            </div>
             <button type="button" class="btn-remove-row" onclick="removeItemRow(this)"><i class="fa-regular fa-trash-can"></i></button>
         `;
         container.appendChild(row);
@@ -977,8 +1026,10 @@
         rows.forEach(r => {
             const name = r.querySelector('input[name="itemName"]').value.trim();
             const qty = r.querySelector('input[name="itemQty"]').value.trim();
+            const remarksInput = r.querySelector('input[name="itemRemarks"]');
+            const remarks = remarksInput ? remarksInput.value.trim() : '';
             if (name) {
-                items.push({ name, qty });
+                items.push({ name, qty, remarks });
             }
         });
         return items;
@@ -986,26 +1037,36 @@
 
     function normalizeItems(entry) {
         if (Array.isArray(entry.items) && entry.items.length > 0) {
-            return entry.items;
+            return entry.items.map(i => ({
+                name: i.name || '',
+                qty: i.qty || '',
+                remarks: i.remarks || ''
+            }));
         }
         if (entry.item) {
-            return [{ name: entry.item, qty: entry.qty || '' }];
+            return [{ name: entry.item, qty: entry.qty || '', remarks: entry.remarks || '' }];
         }
-        return [{ name: 'Unknown Item', qty: '' }];
+        return [{ name: 'Unknown Item', qty: '', remarks: '' }];
     }
 
     function formatItemsHtml(items) {
         let html = '<ul class="items-display-list">';
         items.forEach((it, idx) => {
             const qtyBadge = it.qty ? `<span class="item-pill-qty">${it.qty}</span>` : '';
-            html += `<li><span>${idx + 1}.</span> <span class="item-pill-name">${it.name}</span> ${qtyBadge}</li>`;
+            const remarkText = it.remarks ? `<div class="item-pill-remark"><i class="fa-regular fa-note-sticky"></i> ${it.remarks}</div>` : '';
+            html += `<li><div><span>${idx + 1}.</span> <span class="item-pill-name">${it.name}</span> ${qtyBadge}${remarkText}</div></li>`;
         });
         html += '</ul>';
         return html;
     }
 
     function getItemsPlainText(items) {
-        return items.map(i => i.qty ? `${i.name} (${i.qty})` : i.name).join(', ');
+        return items.map(i => {
+            let text = i.name;
+            if (i.qty) text += ` (${i.qty})`;
+            if (i.remarks) text += ` [${i.remarks}]`;
+            return text;
+        }).join(', ');
     }
 
     function generateOrderId() {
@@ -1306,6 +1367,7 @@
             items: items,
             item: items[0].name,
             qty: items[0].qty || '',
+            remarks: items[0].remarks || '',
             deposit: deposit ? parseFloat(deposit) : 0,
             status: status,
             isEdited: false,
@@ -1324,8 +1386,13 @@
             
             document.getElementById("itemsContainer").innerHTML = `
                 <div class="item-row">
-                    <input type="text" name="itemName" placeholder="Item Name (e.g. Paracetamol 650)" required>
-                    <input type="text" name="itemQty" placeholder="Quantity / Remarks (e.g. 2 Strips)">
+                    <div class="item-fields-wrap">
+                        <div class="item-row-top">
+                            <input type="text" name="itemName" placeholder="Item Name (e.g. Paracetamol 650)" required>
+                            <input type="text" name="itemQty" placeholder="Quantity (e.g. 2 Strips)">
+                        </div>
+                        <input type="text" name="itemRemarks" placeholder="Item Remarks / Notes (e.g. Doctor's choice, Urgent, Brand)">
+                    </div>
                     <button type="button" class="btn-remove-row" onclick="removeItemRow(this)"><i class="fa-regular fa-trash-can"></i></button>
                 </div>
             `;
@@ -1350,7 +1417,7 @@
         const items = normalizeItems(order);
         const container = document.getElementById("itemsContainer");
         container.innerHTML = "";
-        items.forEach(it => addNewItemRow('itemsContainer', it.name, it.qty));
+        items.forEach(it => addNewItemRow('itemsContainer', it.name, it.qty, it.remarks));
 
         scrollToForm();
         alert(`✅ Order details auto-filled for '${order.name}'. Naya deposit/qty/supplier check karke Add karein.`);
@@ -1372,7 +1439,7 @@
         const items = normalizeItems(order);
         const container = document.getElementById("editItemsContainer");
         container.innerHTML = "";
-        items.forEach(it => addNewItemRow('editItemsContainer', it.name, it.qty));
+        items.forEach(it => addNewItemRow('editItemsContainer', it.name, it.qty, it.remarks));
 
         document.getElementById("editModal").classList.add("active");
     }
@@ -1428,6 +1495,7 @@
                 items: newItems,
                 item: newItems[0].name,
                 qty: newItems[0].qty || '',
+                remarks: newItems[0].remarks || '',
                 deposit: newDeposit,
                 status: newStatus,
                 isEdited: true,
