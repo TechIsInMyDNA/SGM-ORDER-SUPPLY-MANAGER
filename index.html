@@ -304,6 +304,7 @@
         }
         .btn-add-item-row:hover { background: #2563eb; color: white; }
 
+        /* Multi-Item Row Inputs */
         .item-row {
             display: flex;
             gap: 8px;
@@ -969,15 +970,21 @@
         </div>
 
         <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #cbd5e1; margin-bottom:14px;">
-            <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:#1e293b;">+ Add New Wholesaler / Agency</div>
+            <div id="wsFormTitle" style="font-size:13px; font-weight:700; margin-bottom:8px; color:#1e293b;">+ Add New Wholesaler / Agency</div>
+            <input type="hidden" id="wsEditId">
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <input type="text" id="wsInputName" placeholder="Agency / Wholesaler Name (e.g. Mahavir Agency)">
                 <input type="text" id="wsInputOwner" placeholder="Owner / Personal Phone (e.g. 9823000000)">
                 <input type="text" id="wsInputShop" placeholder="Shop / Order Phone (e.g. 07182250000, 9423000000)">
                 <input type="text" id="wsInputNote" placeholder="Notes / City (e.g. Nagpur / Gondia Local)">
-                <button class="btn-wholesalers" onclick="saveNewWholesaler()" style="justify-content:center; padding:10px;">
-                    <i class="fa-solid fa-floppy-disk"></i> Save Wholesaler
-                </button>
+                <div style="display:flex; gap:6px;">
+                    <button class="btn-wholesalers" id="wsSaveBtn" onclick="saveNewWholesaler()" style="flex:1; justify-content:center; padding:10px;">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Wholesaler
+                    </button>
+                    <button class="btn-action" id="wsCancelBtn" onclick="cancelEditWholesaler()" style="display:none; background:#e2e8f0; color:#334155; padding:10px 14px;">
+                        Cancel
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1157,6 +1164,7 @@
     });
 
     function openWholesalersModal() {
+        cancelEditWholesaler();
         renderWholesalersList();
         document.getElementById("wholesalersModal").classList.add("active");
     }
@@ -1166,6 +1174,7 @@
     }
 
     async function saveNewWholesaler() {
+        const editId = document.getElementById("wsEditId").value;
         const name = document.getElementById("wsInputName").value.trim();
         const ownerPhone = document.getElementById("wsInputOwner").value.trim();
         const shopPhone = document.getElementById("wsInputShop").value.trim();
@@ -1177,21 +1186,61 @@
         }
 
         try {
-            await wholesalersCol.add({
-                name: name,
-                ownerPhone: ownerPhone,
-                shopPhone: shopPhone,
-                note: note,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            document.getElementById("wsInputName").value = '';
-            document.getElementById("wsInputOwner").value = '';
-            document.getElementById("wsInputShop").value = '';
-            document.getElementById("wsInputNote").value = '';
-            alert("✅ Wholesaler successfully save ho gaya!");
+            if (editId) {
+                // Update Existing Wholesaler
+                await wholesalersCol.doc(editId).update({
+                    name: name,
+                    ownerPhone: ownerPhone,
+                    shopPhone: shopPhone,
+                    note: note,
+                    lastModifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("✅ Wholesaler details successfully update ho gayi!");
+            } else {
+                // Add New Wholesaler
+                await wholesalersCol.add({
+                    name: name,
+                    ownerPhone: ownerPhone,
+                    shopPhone: shopPhone,
+                    note: note,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("✅ Wholesaler successfully save ho gaya!");
+            }
+            cancelEditWholesaler();
         } catch (err) {
             alert("Error saving: " + err.message);
         }
+    }
+
+    function editWholesaler(id) {
+        if (!verifyAdminPIN()) return;
+        const ws = allWholesalers.find(w => w.id === id);
+        if (!ws) return;
+
+        document.getElementById("wsEditId").value = ws.id;
+        document.getElementById("wsInputName").value = ws.name || '';
+        document.getElementById("wsInputOwner").value = ws.ownerPhone || '';
+        document.getElementById("wsInputShop").value = ws.shopPhone || '';
+        document.getElementById("wsInputNote").value = ws.note || '';
+
+        document.getElementById("wsFormTitle").innerText = "✏️ Edit Wholesaler / Agency Details";
+        document.getElementById("wsSaveBtn").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Update Wholesaler`;
+        document.getElementById("wsCancelBtn").style.display = "inline-flex";
+
+        document.getElementById("wsInputName").focus();
+    }
+
+    function cancelEditWholesaler() {
+        document.getElementById("wsEditId").value = "";
+        document.getElementById("wsInputName").value = "";
+        document.getElementById("wsInputOwner").value = "";
+        document.getElementById("wsInputShop").value = "";
+        document.getElementById("wsInputNote").value = "";
+
+        document.getElementById("wsFormTitle").innerText = "+ Add New Wholesaler / Agency";
+        document.getElementById("wsSaveBtn").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Wholesaler`;
+        document.getElementById("wsCancelBtn").style.display = "none";
     }
 
     function renderWholesalersList() {
@@ -1210,7 +1259,10 @@
             card.innerHTML = `
                 <div class="ws-header">
                     <span class="ws-name"><i class="fa-solid fa-store" style="color:#7c3aed;"></i> ${ws.name}</span>
-                    <button class="btn-action btn-delete" onclick="deleteWholesaler('${ws.id}')" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-action btn-edit" onclick="editWholesaler('${ws.id}')" title="Edit Wholesaler"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteWholesaler('${ws.id}')" title="Delete Wholesaler"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
                 </div>
                 ${ws.note ? `<div style="font-size:11.5px; color:#64748b;">${ws.note}</div>` : ''}
                 <div class="ws-phones">
