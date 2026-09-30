@@ -732,7 +732,7 @@
         .history-data-line { margin: 3px 0; color: #334155; }
         .history-data-line strong { color: #0f172a; }
 
-        /* Wholesaler Directory Cards */
+        /* Wholesaler Directory Cards & Rows */
         .ws-card {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -764,6 +764,28 @@
             gap: 4px;
         }
         .btn-call-badge:hover { background: #10b981; color: white; }
+
+        .ws-phone-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .ws-phone-row input { flex: 1; }
+        .btn-remove-phone {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
 
         @media (max-width: 820px) {
             body { padding: 8px 6px 80px 6px; }
@@ -975,7 +997,23 @@
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <input type="text" id="wsInputName" placeholder="Agency / Wholesaler Name (e.g. Mahavir Agency)">
                 <input type="text" id="wsInputOwner" placeholder="Owner / Personal Phone (e.g. 9823000000)">
-                <input type="text" id="wsInputShop" placeholder="Shop / Order Phone (e.g. 07182250000, 9423000000)">
+                
+                <!-- Dynamic Multiple Shop / Salesman Numbers -->
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span style="font-size:12px; font-weight:600; color:#334155;"><i class="fa-solid fa-phone"></i> Shop / Order Numbers:</span>
+                        <button type="button" onclick="addWsPhoneInput()" style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">
+                            <i class="fa-solid fa-plus"></i> Add Number
+                        </button>
+                    </div>
+                    <div id="wsShopPhonesContainer">
+                        <div class="ws-phone-row">
+                            <input type="text" name="wsShopPhone" placeholder="Shop / Order Phone (e.g. 07182250000)">
+                            <button type="button" class="btn-remove-phone" onclick="removeWsPhoneInput(this)"><i class="fa-regular fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                </div>
+
                 <input type="text" id="wsInputNote" placeholder="Notes / City (e.g. Nagpur / Gondia Local)">
                 <div style="display:flex; gap:6px;">
                     <button class="btn-wholesalers" id="wsSaveBtn" onclick="saveNewWholesaler()" style="flex:1; justify-content:center; padding:10px;">
@@ -1118,8 +1156,8 @@
         navigator.serviceWorker.register(swUrl).catch(() => {});
     }
 
-    // 🔒 Admin PIN Set Karein:
-    const ADMIN_PIN = "1234";
+    // 🔒 Secret Admin PIN (1441)
+    const ADMIN_PIN = "1441";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAA7HYW0-3-whwQTrX_QWJPfHaKZLEkbeoPw",
@@ -1152,7 +1190,7 @@
         }
     }
 
-    // ================= WHOLESALERS DIRECTORY LOGIC =================
+    // ================= WHOLESALERS MULTIPLE PHONES & CRUD =================
     wholesalersCol.onSnapshot((snapshot) => {
         allWholesalers = [];
         snapshot.forEach((doc) => {
@@ -1162,6 +1200,49 @@
         });
         renderWholesalersList();
     });
+
+    function addWsPhoneInput(val = "") {
+        const container = document.getElementById("wsShopPhonesContainer");
+        const div = document.createElement("div");
+        div.className = "ws-phone-row";
+        div.innerHTML = `
+            <input type="text" name="wsShopPhone" placeholder="Shop / Order Phone" value="${val}">
+            <button type="button" class="btn-remove-phone" onclick="removeWsPhoneInput(this)"><i class="fa-regular fa-trash-can"></i></button>
+        `;
+        container.appendChild(div);
+    }
+
+    function removeWsPhoneInput(btn) {
+        const container = document.getElementById("wsShopPhonesContainer");
+        if (container.querySelectorAll(".ws-phone-row").length > 1) {
+            btn.closest(".ws-phone-row").remove();
+        } else {
+            btn.closest(".ws-phone-row").querySelector("input").value = "";
+        }
+    }
+
+    function getWsShopPhones() {
+        const container = document.getElementById("wsShopPhonesContainer");
+        const inputs = container.querySelectorAll('input[name="wsShopPhone"]');
+        const phones = [];
+        inputs.forEach(inp => {
+            const val = inp.value.trim();
+            if (val) phones.push(val);
+        });
+        return phones;
+    }
+
+    function setWsShopPhones(phonesArray) {
+        const container = document.getElementById("wsShopPhonesContainer");
+        container.innerHTML = "";
+        if (Array.isArray(phonesArray) && phonesArray.length > 0) {
+            phonesArray.forEach(p => addWsPhoneInput(p));
+        } else if (typeof phonesArray === "string" && phonesArray.trim()) {
+            addWsPhoneInput(phonesArray.trim());
+        } else {
+            addWsPhoneInput("");
+        }
+    }
 
     function openWholesalersModal() {
         cancelEditWholesaler();
@@ -1177,7 +1258,7 @@
         const editId = document.getElementById("wsEditId").value;
         const name = document.getElementById("wsInputName").value.trim();
         const ownerPhone = document.getElementById("wsInputOwner").value.trim();
-        const shopPhone = document.getElementById("wsInputShop").value.trim();
+        const shopPhones = getWsShopPhones();
         const note = document.getElementById("wsInputNote").value.trim();
 
         if (!name) {
@@ -1191,7 +1272,8 @@
                 await wholesalersCol.doc(editId).update({
                     name: name,
                     ownerPhone: ownerPhone,
-                    shopPhone: shopPhone,
+                    shopPhones: shopPhones,
+                    shopPhone: shopPhones.join(", "),
                     note: note,
                     lastModifiedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -1201,7 +1283,8 @@
                 await wholesalersCol.add({
                     name: name,
                     ownerPhone: ownerPhone,
-                    shopPhone: shopPhone,
+                    shopPhones: shopPhones,
+                    shopPhone: shopPhones.join(", "),
                     note: note,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -1221,8 +1304,10 @@
         document.getElementById("wsEditId").value = ws.id;
         document.getElementById("wsInputName").value = ws.name || '';
         document.getElementById("wsInputOwner").value = ws.ownerPhone || '';
-        document.getElementById("wsInputShop").value = ws.shopPhone || '';
         document.getElementById("wsInputNote").value = ws.note || '';
+
+        const phones = ws.shopPhones || (ws.shopPhone ? ws.shopPhone.split(",").map(p => p.trim()) : []);
+        setWsShopPhones(phones);
 
         document.getElementById("wsFormTitle").innerText = "✏️ Edit Wholesaler / Agency Details";
         document.getElementById("wsSaveBtn").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Update Wholesaler`;
@@ -1235,8 +1320,8 @@
         document.getElementById("wsEditId").value = "";
         document.getElementById("wsInputName").value = "";
         document.getElementById("wsInputOwner").value = "";
-        document.getElementById("wsInputShop").value = "";
         document.getElementById("wsInputNote").value = "";
+        setWsShopPhones([""]);
 
         document.getElementById("wsFormTitle").innerText = "+ Add New Wholesaler / Agency";
         document.getElementById("wsSaveBtn").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Wholesaler`;
@@ -1256,6 +1341,21 @@
         allWholesalers.forEach(ws => {
             const card = document.createElement("div");
             card.className = "ws-card";
+            
+            let phonePillsHtml = '';
+            if (ws.ownerPhone) {
+                phonePillsHtml += `<a href="tel:${ws.ownerPhone}" class="btn-call-badge"><i class="fa-solid fa-user"></i> Owner: ${ws.ownerPhone}</a>`;
+            }
+            
+            const phones = ws.shopPhones || (ws.shopPhone ? ws.shopPhone.split(",").map(p => p.trim()) : []);
+            if (Array.isArray(phones)) {
+                phones.forEach((p, idx) => {
+                    if (p) {
+                        phonePillsHtml += `<a href="tel:${p}" class="btn-call-badge"><i class="fa-solid fa-phone"></i> Shop ${phones.length > 1 ? (idx + 1) : ''}: ${p}</a>`;
+                    }
+                });
+            }
+
             card.innerHTML = `
                 <div class="ws-header">
                     <span class="ws-name"><i class="fa-solid fa-store" style="color:#7c3aed;"></i> ${ws.name}</span>
@@ -1265,10 +1365,7 @@
                     </div>
                 </div>
                 ${ws.note ? `<div style="font-size:11.5px; color:#64748b;">${ws.note}</div>` : ''}
-                <div class="ws-phones">
-                    ${ws.ownerPhone ? `<a href="tel:${ws.ownerPhone}" class="btn-call-badge"><i class="fa-solid fa-user"></i> Owner: ${ws.ownerPhone}</a>` : ''}
-                    ${ws.shopPhone ? `<a href="tel:${ws.shopPhone}" class="btn-call-badge"><i class="fa-solid fa-phone"></i> Shop: ${ws.shopPhone}</a>` : ''}
-                </div>
+                <div class="ws-phones">${phonePillsHtml}</div>
             `;
             container.appendChild(card);
         });
@@ -1313,8 +1410,14 @@
             if (ws.ownerPhone) {
                 phoneButtonsHtml += `<a href="tel:${ws.ownerPhone}" class="btn-call-badge"><i class="fa-solid fa-phone"></i> Call Owner (${ws.ownerPhone})</a>`;
             }
-            if (ws.shopPhone) {
-                phoneButtonsHtml += `<a href="tel:${ws.shopPhone}" class="btn-call-badge"><i class="fa-solid fa-store"></i> Call Shop (${ws.shopPhone})</a>`;
+
+            const phones = ws.shopPhones || (ws.shopPhone ? ws.shopPhone.split(",").map(p => p.trim()) : []);
+            if (Array.isArray(phones)) {
+                phones.forEach((p, idx) => {
+                    if (p) {
+                        phoneButtonsHtml += `<a href="tel:${p}" class="btn-call-badge"><i class="fa-solid fa-store"></i> Call Shop ${phones.length > 1 ? (idx + 1) : ''} (${p})</a>`;
+                    }
+                });
             }
 
             row.innerHTML = `
